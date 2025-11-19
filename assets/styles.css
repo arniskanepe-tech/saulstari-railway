@@ -349,17 +349,3 @@ body.menu-open{
   }
 }
 
-nav a.active {
-  padding:10px 16px !important;
-  border-radius:999px !important;
-}.header nav a,
-.header nav a.active{
-  padding:10px 16px !important;
-  border-radius:999px !important;
-}
-
-/* Aktīvam – tikai krāsa un fons mainās */
-.header nav a.active{
-  background:linear-gradient(90deg,var(--active), var(--primary));
-  color:#fff !important;
-}
