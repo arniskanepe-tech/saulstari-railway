@@ -348,3 +348,8 @@ body.menu-open{
     display:flex;           /* nevis inline-flex */
   }
 }
+
+nav a.active {
+  padding:10px 16px !important;
+  border-radius:999px !important;
+}
