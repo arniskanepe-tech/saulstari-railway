@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="lv"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<title>Karjers Saulstari — Pakalpojumi</title>
+
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/theme-mineral.css">
+<link rel="stylesheet" href="assets/theme-litholines.css">
+<link rel="stylesheet" href="assets/theme-paperlux.css">
+<link rel="stylesheet" href="assets/theme-glassrail.css">
+<link rel="stylesheet" href="assets/theme-solidbar.css">
+<link rel="stylesheet" href="assets/theme-slategold.css">
+<link rel="stylesheet" href="assets/theme-golden-sand.css">
+<link rel="stylesheet" href="assets/theme-switcher.css">
+
+<!-- Stack Gallery minimālais CSS (lokāli šai lapai) -->
+<style>
+  .stack-gallery{
+  position: relative;
+  height: 320px;
+  border-radius: 18px;
+  overflow: visible;
+  user-select: none;
+  margin: 16px 0;
+}
+.stack-gallery img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.14);
+  transition: transform .4s ease, z-index .3s ease, filter .3s ease, opacity .3s ease;
+  cursor: pointer;
+}
+
+/* Sākotnējā kaskāde (redzamas malas ~5%) */
+.stack-gallery img:nth-child(1){ transform: translateX(0%); z-index: 1; }
+.stack-gallery img:nth-child(2){ transform: translateX(5%); z-index: 2; }
+.stack-gallery img:nth-child(3){ transform: translateX(10%); z-index: 3; }
+.stack-gallery img:nth-child(4){ transform: translateX(15%); z-index: 4; }
+.stack-gallery img:nth-child(5){ transform: translateX(20%); z-index: 5; }
+
+/* Kad uzbrauc virs bildes – tā paceļas un kļūst nedaudz lielāka */
+.stack-gallery img:hover{
+  transform: scale(1.05) translateX(0);
+  z-index: 20;
+  filter: brightness(1.05);
+}
+
+/* Kad cita bilde hover – pārējās kļūst nedaudz blāvākas */
+.stack-gallery:hover img:not(:hover){
+  opacity: 0.7;
+  filter: brightness(0.9);
+}
+
+/* Lightbox */
+.sg-lightbox{
+  position: fixed; inset: 0; z-index: 5000;
+  background: rgba(0,0,0,.65);
+  display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.sg-lightbox.is-open{ display: flex; }
+.sg-lightbox .sg-frame{
+  width: 75vw; height: 75vh;
+  max-width: 1280px; max-height: 900px;
+  background: #000; border-radius: 18px; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,.45);
+  position: relative;
+}
+.sg-lightbox img{
+  width: 100%; height: 100%; object-fit: contain;
+  background: #000;
+}
+.sg-close{
+  position: absolute; top: 10px; right: 12px;
+  background: rgba(255,255,255,.9); border: none;
+  border-radius: 999px; width: 36px; height: 36px;
+  font-size: 20px; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+</style>
+<style>
+
+/* === 3-per-row cards with lightbox === */
+.work-grid, .materials-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media(max-width: 980px){
+  .work-grid, .materials-grid{ grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 640px){
+  .work-grid, .materials-grid{ grid-template-columns: 1fr; }
+}
+
+.work-card, .material-card{
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow: var(--shadow);
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.work-card .media, .material-card .media{
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background:#eef2eb;
+  border-radius:12px;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.work-card .media{ cursor: zoom-in; }
+
+.work-card .media img, .material-card .media img{
+  width:100%;height:100%;object-fit:cover;
+}
+
+.work-card h3, .material-card h3{ margin:2px 6px; font-size:1.05rem; }
+.work-card p{ margin:0 6px 6px; color: var(--muted); }
+
+.material-card .docs{
+  display:flex;flex-wrap:wrap;gap:10px;margin:4px 6px 6px;
+}
+.material-card .docs .doc{
+  display:inline-block;
+  padding:8px 10px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:600;
+  border:1px solid var(--border);
+  color: var(--primary);
+  background: #fff;
+}
+.material-card .docs .doc:hover{
+  border-color: var(--active);
+  color:#fff;
+  background: linear-gradient(90deg,var(--active), var(--primary));
+}
+.material-card .docs .disabled{
+  opacity:.6;
+  pointer-events:none;
+  color: var(--muted);
+  background: #f3f5f1;
+}
+
+/* small counter badge to indicate gallery length */
+.work-card .count-badge{
+  position:absolute; right:8px; bottom:8px;
+  background: rgba(15,26,20,.85);
+  color: #fff; padding:6px 10px; border-radius:999px; font-weight:700; font-size:.9rem;
+  border:1px solid rgba(255,255,255,.2);
+}
+
+/* Lightbox */
+.lb-backdrop{
+  position:fixed; inset:0; background:rgba(10,16,12,.7);
+  display:none; align-items:center; justify-content:center;
+  z-index: 1000;
+}
+.lb-backdrop.active{ display:flex; }
+.lb-frame{
+  width:66.666vw; max-width:1200px; aspect-ratio: 16 / 9;
+  background:#000; border-radius:16px; overflow:hidden; position:relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+@media(max-width: 1024px){
+  .lb-frame{ width: 90vw; }
+}
+.lb-frame img{
+  width:100%; height:100%; object-fit:contain; background:#000;
+}
+.lb-close, .lb-prev, .lb-next{
+  position:absolute; top:50%; transform: translateY(-50%);
+  background: rgba(25,35,30,.8);
+  color:#fff; border:none; cursor:pointer;
+  width:44px; height:44px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+  font-size:22px; line-height:1;
+}
+.lb-close{ top:10px; right:10px; transform:none; }
+.lb-prev{ left:10px; }
+.lb-next{ right:10px; }
+.lb-close:hover, .lb-prev:hover, .lb-next:hover{ background: rgba(25,35,30,.95); }
+
+</style>
+</head>
+<body class="theme-mineral">
+<header class="header">
+  <div class="container nav">
+    <div class="brand"><img src="assets/logo.png" alt="Karjers Saulstari"></div>
+    <nav>
+    <a href="index.html">Sākums</a>
+    <a href="materials.html">Materiāli</a>
+    <a href="pakalpojumi.html" class="active">Pakalpojumi</a>
+    <a href="contact.html">Kontakti</a>
+  </nav>
+
+    <button class="menu-toggle" aria-label="Izvēlne">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+<div class="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu-inner">
+    <button class="mobile-menu-close" aria-label="Aizvērt izvēlni">✕</button>
+
+    <div class="mobile-search">
+      <input type="search" placeholder="Meklēt..." />
+      <button class="mobile-search-btn" aria-label="Meklēt">🔍</button>
+    </div>
+
+    <nav class="mobile-nav">
+      <a href="index.html">SĀKUMS</a>
+      <a href="materials.html">MATERIĀLI</a>
+      <a href="pakalpojumi.html">PAKALPOJUMI</a>
+      <a href="contact.html">KONTAKTI</a>
+    </nav>
+
+    <div class="mobile-contact">
+      <a href="tel:+37120044910" class="mobile-phone">
+        <span class="icon-phone">📞</span>
+        <span>+37120044910</span>
+      </a>
+      <a href="https://wa.me/37120044910" class="mobile-whatsapp">
+        <span class="wa-badge">WA</span>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+
+    <div class="mobile-map">
+      <iframe class="mobile-map-frame"
+        src="https://www.google.com/maps?q=Karjers%20Saulstari%20Salaspils&output=embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<h1 class="visually-hidden">Pakalpojumi</h1>
+
+
+<section class="section">
+  <div class="container">
+    <div class="work-grid">
+<article class="work-card" id="transportesana">
+  <div class="media" 
+       data-gallery="assets/galerija/transportesana/01.jpg|assets/galerija/transportesana/02.jpg"
+       data-start="0" title="Atvērt galeriju">
+    <img src="assets/galerija/transportesana/01.jpg" alt="Transportēšana un piegāde">
+    <div class="count-badge">2 foto</div>
+  </div>
+  <h3>Transportēšana un piegāde</h3>
+  <p>Piedāvājam iegādāto preču piegādi ar pašizgāzējiem, puspiekabēm, apjomi no 2 līdz 20 m3.</p>
+</article>
+<article class="work-card" id="tehnikas-noma">
+  <div class="media" 
+       data-gallery="assets/galerija/Tehnikasnoma/01.jpg|assets/galerija/Tehnikasnoma/02.jpg|assets/galerija/Tehnikasnoma/03.jpg"
+       data-start="0" title="Atvērt galeriju">
+    <img src="assets/galerija/Tehnikasnoma/01.jpg" alt="Tehnikas noma">
+    <div class="count-badge">3 foto</div>
+  </div>
+  <h3>Tehnikas noma</h3>
+  <p>Ekskavatori, frontālie iekrāvēji, sijātājs — noma ar operatoru.</p>
+</article>
+<article class="work-card" id="sijasana">
+  <div class="media"
+       data-gallery="assets/galerija/sijasana/01.jpg|assets/galerija/sijasana/02.jpg|assets/galerija/sijasana/03.jpg|assets/galerija/sijasana/04.jpg|assets/galerija/sijasana/05.jpg"
+       data-start="0" title="Atvērt galeriju">
+    <img src="assets/galerija/sijasana/01.jpg" alt="Sijāšanas pakalpojumi">
+    <div class="count-badge">5 foto</div>
+  </div>
+  <h3>Sijāšanas pakalpojumi</h3>
+  <p>Frakciju sijāšana uz vietas objektā vai karjerā.</p>
+</article>
+<article class="work-card" id="labiekartosana">
+  <div class="media"
+       data-gallery="assets/galerija/labiekartosana/07.jpg|assets/galerija/labiekartosana/02.jpg|assets/galerija/labiekartosana/03.jpg|assets/galerija/labiekartosana/04.jpg|assets/galerija/labiekartosana/05.jpg|assets/galerija/labiekartosana/06.jpg|assets/galerija/labiekartosana/01.jpg"
+       data-start="0" title="Atvērt galeriju">  
+    <img src="assets/galerija/labiekartosana/07.jpg" alt="labiekārtošana">
+    <div class="count-badge">7 foto</div>
+  </div>
+  <h3>Apzaļumošana un labiekārtošana</h3>
+  <p>Sniedzam teritoriju apzaļumošanas un labiekārtošanas pakalpojumus. Zāles sēšana, bruģēšana.</p>
+</article>
+<article class="work-card" id="zemesdarbi">
+     <div class="media"
+       data-gallery="assets/galerija/zemesdarbi/01.jpg"
+       data-start="0" title="Atvērt galeriju">
+    <img src="assets/galerija/zemesdarbi/01.jpg" alt="Zemes darbi">
+    <div class="count-badge">1 foto</div>
+  </div>
+  <h3>Zemes darbi</h3>
+  <p>Grāvju un dīķu rakšana, teritoriju izlīdzināšana, kanazlizācijas, ūdensvada un citu komunikāciju izbūve.</p>
+</article>
+    </div>
+</section>
+
+
+<section class="cta-bar">
+  <div class="container">
+    <p style="margin:0;text-align:center">
+      <strong>Lieliem apjomiem — individuālas cenas, piedāvājam piegādi.</strong>
+      <a href="contact.html#fast-form">Aizpildi ātro pieprasījumu</a>.
+    </p>
+  </div>
+</section>
+
+<section class="map-section">
+  <iframe class="map-banner" src="https://www.google.com/maps?q=Karjers%20Saulstari%20Salaspils&output=embed" loading="lazy"></iframe>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div>© 2025 Karjers “Saulstari”.</div>
+      <div><span class="badge">Darba dienās 7:00–18:00</span> · Tel. <a href="tel:+37120044910">+371 20044910</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Skripti -->
+<script src="assets/js/focal.js"></script>
+<script src="assets/js/theme-switcher.js"></script>
+
+<!-- Stack gallery JS (lokāli šai lapai) -->
+<script>
+(function(){
+  // Lightbox
+  let overlay;
+  function ensureOverlay(){
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.className = 'sg-lightbox';
+    overlay.innerHTML = `
+      <div class="sg-frame">
+        <button class="sg-close" aria-label="Aizvērt">×</button>
+        <img alt="">
+      </div>`;
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', e=>{
+      if (e.target === overlay || e.target.classList.contains('sg-close')) closeLightbox();
+    });
+    window.addEventListener('keydown', e=>{
+      if (e.key === 'Escape') closeLightbox();
+    });
+    return overlay;
+  }
+  function openLightbox(src){
+    const o = ensureOverlay();
+    o.querySelector('img').src = src;
+    o.classList.add('is-open');
+  }
+  function closeLightbox(){ overlay && overlay.classList.remove('is-open'); }
+
+  // Katram attēlam – klikšķis atver lielāku versiju
+  document.querySelectorAll('.stack-gallery img').forEach(img=>{
+    img.addEventListener('click', e=>{
+      e.stopPropagation();
+      openLightbox(img.src);
+    });
+  });
+})();
+</script>
+<script src="assets/js/lightbox.js"></script>
+<script src="assets/js/rays-origin.js"></script>
+  <script src="assets/js/mobile-menu.js"></script>
+</body>
+</html>
