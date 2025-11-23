@@ -1,44 +1,53 @@
-[
-  {
-    "name": "Smilts",
-    "price": 8.0,
-    "unit": "m3",
-    "status": "available",
-    "updated_at": "2025-10-28 13:46"
-  },
-  {
-    "name": "Melnzeme",
-    "price": 11.0,
-    "unit": "m3",
-    "status": "available",
-    "updated_at": "2025-10-28 13:46"
-  },
-  {
-    "name": "Šķembas 0/45",
-    "price": 7.5,
-    "unit": "t",
-    "status": "oos",
-    "updated_at": "2025-10-28 13:46"
-  },
-  {
-    "name": "Šķembas 0/56",
-    "price": 7.5,
-    "unit": "t",
-    "status": "available",
-    "updated_at": "2025-10-28 13:46"
-  },
-  {
-    "name": "Šķembas 0/32",
-    "price": 7.5,
-    "unit": "t",
-    "status": "low",
-    "updated_at": "2025-10-28 13:46"
-  },
-  {
-    "name": "Šķembas 0/16",
-    "price": 8.8,
-    "unit": "t",
-    "status": "available",
-    "updated_at": "2025-10-28 13:46"
-  }
-]
+{
+  "lastUpdate": "2025-10-28 13:46",
+  "materials": [
+    {
+      "id": "smilts",
+      "name": "Smilts",
+      "price": 8.0,
+      "unit": "€/m3",
+      "availability": "pieejams",
+      "notes": ""
+    },
+    {
+      "id": "melnzeme",
+      "name": "Melnzeme",
+      "price": 11.0,
+      "unit": "€/m3",
+      "availability": "pieejams",
+      "notes": ""
+    },
+    {
+      "id": "skembas-0-45",
+      "name": "Šķembas 0/45",
+      "price": 7.5,
+      "unit": "€/t",
+      "availability": "nav pieejams",
+      "notes": ""
+    },
+    {
+      "id": "skembas-0-56",
+      "name": "Šķembas 0/56",
+      "price": 7.5,
+      "unit": "€/t",
+      "availability": "pieejams",
+      "notes": ""
+    },
+    {
+      "id": "skembas-0-32",
+      "name": "Šķembas 0/32",
+      "price": 7.5,
+      "unit": "€/t",
+      "availability": "neliels daudzums",
+      "notes": ""
+    },
+    {
+      "id": "skembas-0-16",
+      "name": "Šķembas 0/16",
+      "price": 8.8,
+      "unit": "€/t",
+      "availability": "pieejams",
+      "notes": ""
+    }
+  ]
+}
