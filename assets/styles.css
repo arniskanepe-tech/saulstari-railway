@@ -34,13 +34,13 @@ nav a:hover{color:var(--primary)}
 .vprice{font-weight:800;color:var(--primary)}
 .vmeta{font-size:13px;color:var(--muted)}
 
-/* ===== PIEEJAMĪBA – JAUNAIS IZKĀRTOJUMS ===== */
-/* 3 kolonnas: [punkts+statuss] [spacer] [interesēties] */
+/* ===== PIEEJAMĪBA – IZKĀRTOJUMS ===== */
+/* Tagad flex, viss turas kopā vienā blokā */
 .avail-grid{
-  display:grid;
-  grid-template-columns:minmax(160px,auto) 1fr 120px;
+  display:flex;
   align-items:center;
   gap:12px;
+  flex-wrap:wrap;
 }
 
 /* punkts + statuss vienā rindā */
@@ -51,11 +51,13 @@ nav a:hover{color:var(--primary)}
   white-space:nowrap; /* Neliels daudzums / Nav pieejams vienā rindā */
 }
 
+/* šo izmantojam tikai kā placeholder – flex variantā to paslēpjam */
 .avail-spacer{
-  /* speciāli tukšs – tikai lai saglabātu 2. kolonnu */
+  display:none;
 }
 
 .dot{
+  display:inline-block;
   width:10px;
   height:10px;
   border-radius:50%;
@@ -64,15 +66,16 @@ nav a:hover{color:var(--primary)}
 .dot.yellow{background:#f2b01b}
 .dot.red{background:#e74c3c}
 .dot.gray{background:#94a3b8}
+.dot.grey{background:#94a3b8} /* ja nu kādreiz būs 'grey' */
 
 .avail-text{
   color:var(--muted);
 }
 
-/* pēdējā kolonna – vieta interesēties (arī ja tukšs) */
+/* pēdējā kolonna – vieta interesēties */
 .avail-action{
-  text-align:right;
-  min-width:120px;
+  text-align:left;
+  min-width:auto;
 }
 .avail-action a{
   color:var(--primary);
@@ -85,12 +88,12 @@ nav a:hover{color:var(--primary)}
   display:none;
 }
 
-/* Mobilajā: viss vienā kolonnā, interesēties zem statusa */
+/* Mobilajā: salaužam pa rindām */
 @media(max-width:780px){
   .vitem{grid-template-columns:1fr}
   .avail-grid{
-    grid-template-columns:1fr;
-    row-gap:6px;
+    flex-direction:column;
+    align-items:flex-start;
   }
   .avail-action{
     text-align:left;
