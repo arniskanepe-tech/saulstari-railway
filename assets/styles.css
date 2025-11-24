@@ -35,14 +35,7 @@ nav a:hover{color:var(--primary)}
   gap:12px;
 }
 
-/* 6 kolonnas:
-   1: materiāls
-   2: cena/mērvienība
-   3: piezīme (elastīgā)
-   4: aplītis
-   5: statuss
-   6: interesēties
-*/
+/* 6 kolonnas: materiāls | cena | piezīme | aplītis | statuss | interesēties */
 .vitem{
   background:var(--panel);
   border:1px solid var(--border);
@@ -52,18 +45,18 @@ nav a:hover{color:var(--primary)}
 
   display:grid;
   grid-template-columns:
-    minmax(0, 1.6fr)   /* materiāls */
-    minmax(0, 0.7fr)   /* cena */
-    minmax(0, 1.2fr)   /* piezīme – elastīgā */
-    auto              /* aplītis */
-    auto              /* statuss */
-    auto;             /* interesēties */
+    minmax(0, 2fr)   /* 1: materiāls */
+    minmax(0, 1fr)   /* 2: cena/mērvienība */
+    minmax(0, 2fr)   /* 3: piezīme (elastīgā) */
+    auto             /* 4: aplītis */
+    auto             /* 5: statuss */
+    auto;            /* 6: interesēties */
   column-gap:12px;
   row-gap:4px;
   align-items:center;
 }
 
-/* kopējais “šūnas” stils */
+/* bāzes šūna */
 .vcell{
   text-align:left;
 }
@@ -74,7 +67,7 @@ nav a:hover{color:var(--primary)}
   letter-spacing:.2px;
 }
 
-/* 2. kolonna – cena */
+/* 2. kolonna – cena/mērvienība */
 .vcell-price{
   font-weight:800;
   color:var(--primary);
@@ -94,8 +87,8 @@ nav a:hover{color:var(--primary)}
 }
 .dot{
   display:inline-block;
-  width:14px;
-  height:14px;
+  width:12px;
+  height:12px;
   border-radius:50%;
 }
 .dot.green{background:#2fb344}
@@ -119,16 +112,8 @@ nav a:hover{color:var(--primary)}
   text-decoration:underline;
 }
 
-/* veca .avail-label ja kur palikusi – paslēpjam */
+/* ja kaut kur palikusi veca .avail-label – paslēpjam */
 .avail-label{display:none}
-
-/* Mobilajā – saraksts zem cita, bet kolonnas saglabājas secībā */
-@media(max-width:780px){
-  .vitem{
-    grid-template-columns:1fr;
-    align-items:flex-start;
-  }
-}
 
 /* ===== /MATERIĀLI ===== */
 
