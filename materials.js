@@ -107,7 +107,7 @@ function createMaterialRow(material, index) {
 
   let priceText = basePrice;
   if (unit) priceText += ' ' + unit;
-  if (note) priceText += ' ' + note; // A variants – piezīme tajā pašā rindā
+  if (note) priceText += ' ' + note; // pagaidām piezīmi turam tajā pašā rindā
 
   priceEl.textContent = priceText;
 
@@ -120,19 +120,28 @@ function createMaterialRow(material, index) {
   metaEl.className = 'vmeta';
   leftWrap.appendChild(metaEl);
 
-  // === Labā puse: pieejamības punkts + teksts + "interesēties" ===
+  // === Labā puse: pieejamība + interesēties ===
   const rightWrap = document.createElement('div');
   rightWrap.className = 'avail-grid';
 
-  // TE agrāk bija "Pieejamība:" label – to vairs neveidojam
+  // 1. kolonna gridā – atstājam tukšu, lai saglabājas 120px vieta
+  const labelEl = document.createElement('div');
+  labelEl.className = 'avail-label';
+  labelEl.textContent = ''; // agrāk: 'Pieejamība:'
+  rightWrap.appendChild(labelEl);
 
+  // 2. kolonna – punkts
   const dotEl = document.createElement('span');
   dotEl.className = 'dot ' + dotClass;
+  rightWrap.appendChild(dotEl);
 
+  // 3. kolonna – statuss
   const statusEl = document.createElement('div');
   statusEl.className = 'avail-text';
   statusEl.textContent = statusText;
+  rightWrap.appendChild(statusEl);
 
+  // 4. kolonna – "interesēties" (vai tukšs, ja nav pieejams)
   const actionEl = document.createElement('div');
   actionEl.className = 'avail-action';
 
@@ -143,9 +152,6 @@ function createMaterialRow(material, index) {
     actionEl.appendChild(link);
   }
 
-  // tikai punkts + teksts + poga
-  rightWrap.appendChild(dotEl);
-  rightWrap.appendChild(statusEl);
   rightWrap.appendChild(actionEl);
 
   row.appendChild(leftWrap);
