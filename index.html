@@ -1,33 +1,40 @@
-<!DOCTYPE html><html lang="lv"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<title>Karjers Saulstari</title>
-<link rel="stylesheet" href="assets/styles.css">
-<link rel="stylesheet" href="assets/theme-mineral.css">
-<link rel="stylesheet" href="assets/theme-litholines.css">
-<link rel="stylesheet" href="assets/theme-paperlux.css">
-<link rel="stylesheet" href="assets/theme-glassrail.css">
-<link rel="stylesheet" href="assets/theme-solidbar.css">
-<link rel="stylesheet" href="assets/theme-slategold.css">
-<link rel="stylesheet" href="assets/theme-golden-sand.css">
-<!-- switcher UI stils -->
-<link rel="stylesheet" href="assets/theme-switcher.css">
-</head><body class="theme-solidbar">
-<header class="header"><div class="container nav">
-  <div class="brand"><img src="assets/logo.png" alt="Karjers Saulstari"></div>
-  <nav>
-    <a href="index.html" class="active">Sākums</a>
-    <a href="materials.html">Materiāli</a>
-    <a href="pakalpojumi.html">Pakalpojumi</a>
-    <a href="contact.html">Kontakti</a>
-  </nav>
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <title>Karjers Saulstari</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/theme-mineral.css">
+  <link rel="stylesheet" href="assets/theme-litholines.css">
+  <link rel="stylesheet" href="assets/theme-paperlux.css">
+  <link rel="stylesheet" href="assets/theme-glassrail.css">
+  <link rel="stylesheet" href="assets/theme-solidbar.css">
+  <link rel="stylesheet" href="assets/theme-slategold.css">
+  <link rel="stylesheet" href="assets/theme-golden-sand.css">
+  <!-- switcher UI stils -->
+  <link rel="stylesheet" href="assets/theme-switcher.css">
+</head>
+<body class="theme-solidbar">
+<header class="header">
+  <div class="container nav">
+    <div class="brand"><img src="assets/logo.png" alt="Karjers Saulstari"></div>
+    <nav>
+      <a href="index.html" class="active">Sākums</a>
+      <a href="materials.html">Materiāli</a>
+      <a href="pakalpojumi.html">Pakalpojumi</a>
+      <a href="contact.html">Kontakti</a>
+    </nav>
 
     <button class="menu-toggle" aria-label="Izvēlne">
       <span></span>
       <span></span>
       <span></span>
     </button>
-</div></header>
+  </div>
+</header>
+
 <div class="mobile-menu" aria-hidden="true">
   <div class="mobile-menu-inner">
     <button class="mobile-menu-close" aria-label="Aizvērt izvēlni">✕</button>
@@ -63,117 +70,88 @@
       </iframe>
     </div>
   </div>
-</div><h1 class='visually-hidden'>Sākums</h1><section class="section hero"><div class="container"><div class="frame" id="hero"><div class="slide active"><img src="assets/hero/hero-1.jpg" alt="Hero 1" data-focal="50% 35%"></div><div class="slide"><img src="assets/hero/hero-2.jpg" alt="Hero 2" data-focal="50% 35%"></div><div class="slide"><img src="assets/hero/hero-3.jpg" alt="Hero 3" data-focal="50% 45%"></div><div class="slide"><img src="assets/hero/hero-4.jpg" alt="Hero 4" data-focal="50% 30%"></div><div class="slide"><img src="assets/hero/hero-5.jpg" alt="Hero 5" data-focal="50% 30%"></div><div class="caption">smilts, šķembas, melnzeme, piegāde, tehnikas noma, zemes darbi</div></div></div></section>
-<script>(function(){var i=0,s=document.querySelectorAll('#hero .slide');if(s.length<2) return;setInterval(function(){s[i].classList.remove('active');i=(i+1)%s.length;s[i].classList.add('active');},5000);})();</script>
+</div>
 
-<section class="section"><div class="container">
+<h1 class="visually-hidden">Sākums</h1>
 
-  <!-- Globālais atjaunošanas datums (JS aizpilda no materials.json) -->
-  <div class="vmeta" id="home-materials-updated"></div>
-
-  <div class="vlist">
-
-    <div class="vitem" data-material-id="smilts">
-      <div>
-        <div class="vname-line">
-          <div class="vname">Smilts</div>
-          <div class="vprice js-price">8.00 €/m3</div>
-        </div>
-        <!-- Piezīmes no JSON (aizstāj "Atjaunots ...") -->
-        <div class="vmeta js-notes"></div>
+<section class="section hero">
+  <div class="container">
+    <div class="frame" id="hero">
+      <div class="slide active">
+        <img src="assets/hero/hero-1.jpg" alt="Hero 1" data-focal="50% 35%">
       </div>
-      <div class="avail-grid">
-        <div class="avail-label">Pieejamība:</div>
-        <span class="dot green"></span>
-        <div class="avail-text js-status">Pieejams</div>
-        <div class="avail-action"></div>
+      <div class="slide">
+        <img src="assets/hero/hero-2.jpg" alt="Hero 2" data-focal="50% 35%">
+      </div>
+      <div class="slide">
+        <img src="assets/hero/hero-3.jpg" alt="Hero 3" data-focal="50% 45%">
+      </div>
+      <div class="slide">
+        <img src="assets/hero/hero-4.jpg" alt="Hero 4" data-focal="50% 30%">
+      </div>
+      <div class="slide">
+        <img src="assets/hero/hero-5.jpg" alt="Hero 5" data-focal="50% 30%">
+      </div>
+      <div class="caption">
+        smilts, šķembas, melnzeme, piegāde, tehnikas noma, zemes darbi
       </div>
     </div>
-
-    <div class="vitem" data-material-id="melnzeme">
-      <div>
-        <div class="vname-line">
-          <div class="vname">Melnzeme</div>
-          <div class="vprice js-price">11.00 €/m3</div>
-        </div>
-        <div class="vmeta js-notes"></div>
-      </div>
-      <div class="avail-grid">
-        <div class="avail-label">Pieejamība:</div>
-        <span class="dot green"></span>
-        <div class="avail-text js-status">Pieejams</div>
-        <div class="avail-action"></div>
-      </div>
-    </div>
-
-    <div class="vitem" data-material-id="skembas-0-45">
-      <div>
-        <div class="vname-line">
-          <div class="vname">Šķembas 0/45</div>
-          <div class="vprice js-price">7.50 €/t</div>
-        </div>
-        <div class="vmeta js-notes"></div>
-      </div>
-      <div class="avail-grid">
-        <div class="avail-label">Pieejamība:</div>
-        <span class="dot red"></span>
-        <div class="avail-text js-status">Šobrīd nav pieejams</div>
-        <div class="avail-action"></div>
-      </div>
-    </div>
-
-    <div class="vitem" data-material-id="skembas-0-56">
-      <div>
-        <div class="vname-line">
-          <div class="vname">Šķembas 0/56</div>
-          <div class="vprice js-price">7.50 €/t</div>
-        </div>
-        <div class="vmeta js-notes"></div>
-      </div>
-      <div class="avail-grid">
-        <div class="avail-label">Pieejamība:</div>
-        <span class="dot green"></span>
-        <div class="avail-text js-status">Pieejams</div>
-        <div class="avail-action"></div>
-      </div>
-    </div>
-
-    <div class="vitem" data-material-id="skembas-0-32">
-      <div>
-        <div class="vname-line">
-          <div class="vname">Šķembas 0/32</div>
-          <div class="vprice js-price">7.50 €/t</div>
-        </div>
-        <div class="vmeta js-notes"></div>
-      </div>
-      <div class="avail-grid">
-        <div class="avail-label">Pieejamība:</div>
-        <span class="dot yellow"></span>
-        <div class="avail-text js-status">Neliels daudzums</div>
-        <div class="avail-action"></div>
-      </div>
-    </div>
-
-    <div class="vitem" data-material-id="skembas-0-16">
-      <div>
-        <div class="vname-line">
-          <div class="vname">Šķembas 0/16</div>
-          <div class="vprice js-price">8.80 €/t</div>
-        </div>
-        <div class="vmeta js-notes"></div>
-      </div>
-      <div class="avail-grid">
-        <div class="avail-label">Pieejamība:</div>
-        <span class="dot green"></span>
-        <div class="avail-text js-status">Pieejams</div>
-        <div class="avail-action"></div>
-      </div>
-    </div>
-
-  </div></div>
+  </div>
 </section>
 
-<section class="cta-bar"><div class="container"><p style="margin:0;text-align:center"><strong>Lieliem apjomiem — individuālas cenas, piedāvājam piegādi.</strong> <a href="contact.html#fast-form">Aizpildi ātro pieprasījumu</a>.</p></div></section><section class="map-section"><iframe class="map-banner" src="https://www.google.com/maps?q=Karjers%20Saulstari%20Salaspils&output=embed" loading="lazy"></iframe></section><footer class="footer"><div class="container"><div class="row"><div>© 2025 Karjers “Saulstari”.</div><div><span class="badge">Darba dienās 7:00–18:00</span> · Tel. <a href="tel:+37120044910">+371 20044910</a></div></div></div></footer>  <script src="assets/js/focal.js"></script>
+<script>
+  (function() {
+    var i = 0, s = document.querySelectorAll('#hero .slide');
+    if (s.length < 2) return;
+    setInterval(function() {
+      s[i].classList.remove('active');
+      i = (i + 1) % s.length;
+      s[i].classList.add('active');
+    }, 5000);
+  })();
+</script>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Globālais atjaunošanas datums (JS aizpilda no /api/materials) -->
+    <div class="vmeta" id="home-materials-updated"></div>
+
+    <!-- Šeit JS (materials.js) dinamiski ieliks visas materiālu rindas -->
+    <div class="vlist" data-materials-list></div>
+
+  </div>
+</section>
+
+<section class="cta-bar">
+  <div class="container">
+    <p style="margin:0;text-align:center">
+      <strong>Lieliem apjomiem — individuālas cenas, piedāvājam piegādi.</strong>
+      <a href="contact.html#fast-form">Aizpildi ātro pieprasījumu</a>.
+    </p>
+  </div>
+</section>
+
+<section class="map-section">
+  <iframe class="map-banner"
+    src="https://www.google.com/maps?q=Karjers%20Saulstari%20Salaspils&output=embed"
+    loading="lazy">
+  </iframe>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div>© 2025 Karjers “Saulstari”.</div>
+      <div>
+        <span class="badge">Darba dienās 7:00–18:00</span>
+        · Tel. <a href="tel:+37120044910">+371 20044910</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/focal.js"></script>
 <script src="assets/js/focal.js"></script>
 <script src="assets/js/theme-switcher.js"></script>
 <script src="assets/js/rays-origin.js"></script>
