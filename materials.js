@@ -87,16 +87,12 @@ function createMaterialRow(material, index) {
   row.className = 'vitem';
   row.dataset.materialId = id;
 
-  // === Kreisā puse: nosaukums + cena, piezīme atsevišķā rindiņā ===
-  const leftWrap = document.createElement('div');
-
-  const nameLine = document.createElement('div');
-  nameLine.className = 'vname-line';
-
+  // 1. kolonna – nosaukums
   const nameEl = document.createElement('div');
   nameEl.className = 'vname';
   nameEl.textContent = name;
 
+  // 2. kolonna – cena + mērvienība
   const priceEl = document.createElement('div');
   priceEl.className = 'vprice';
 
@@ -107,45 +103,27 @@ function createMaterialRow(material, index) {
 
   let priceText = basePrice;
   if (unit) priceText += ' ' + unit;
-
   priceEl.textContent = priceText;
 
-  nameLine.appendChild(nameEl);
-  nameLine.appendChild(priceEl);
-  leftWrap.appendChild(nameLine);
-
-  // meta rindiņa – šeit rādām piezīmi, ja ir
+  // 3. kolonna – piezīme
   const metaEl = document.createElement('div');
   metaEl.className = 'vmeta';
   if (note) {
     metaEl.textContent = note;
+  } else {
+    metaEl.textContent = '';
   }
-  leftWrap.appendChild(metaEl);
 
-  // === Labā puse: pieejamība + interesēties ===
-  const rightWrap = document.createElement('div');
-  rightWrap.className = 'avail-grid';
-
-  // Punkts
+  // 4. kolonna – aplītis
   const dotEl = document.createElement('span');
   dotEl.className = 'dot ' + dotClass;
 
-  // Teksts
+  // 5. kolonna – statusa teksts
   const statusEl = document.createElement('div');
   statusEl.className = 'avail-text';
   statusEl.textContent = statusText;
 
-  // Kopējais konteineris punktam + tekstam (lai tie IR vienā rindā)
-  const statusWrap = document.createElement('div');
-  statusWrap.className = 'avail-status-wrap';
-  statusWrap.appendChild(dotEl);
-  statusWrap.appendChild(statusEl);
-
-  // Tukšais "spacers" – flex variantā paslēpts ar CSS
-  const spacerEl = document.createElement('div');
-  spacerEl.className = 'avail-spacer';
-
-  // Interesēties
+  // 6. kolonna – interesēties
   const actionEl = document.createElement('div');
   actionEl.className = 'avail-action';
   if (showInterest) {
@@ -155,13 +133,13 @@ function createMaterialRow(material, index) {
     actionEl.appendChild(link);
   }
 
-  // Pievienojam 3 elementus pareizā secībā
-  rightWrap.appendChild(statusWrap);
-  rightWrap.appendChild(spacerEl);
-  rightWrap.appendChild(actionEl);
-
-  row.appendChild(leftWrap);
-  row.appendChild(rightWrap);
+  // Pievienojam elementus precīzā secībā, lai grid aizpildās pareizi
+  row.appendChild(nameEl);
+  row.appendChild(priceEl);
+  row.appendChild(metaEl);
+  row.appendChild(dotEl);
+  row.appendChild(statusEl);
+  row.appendChild(actionEl);
 
   return row;
 }
