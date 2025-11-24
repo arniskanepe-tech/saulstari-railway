@@ -87,12 +87,17 @@ function createMaterialRow(material, index) {
   row.className = 'vitem';
   row.dataset.materialId = id;
 
-  // 1. kolonna – nosaukums
+  // === Kreisā puse: nosaukums + cena + piezīme ===
+  const leftWrap = document.createElement('div');
+  leftWrap.className = 'vleft';
+
+  const nameLine = document.createElement('div');
+  nameLine.className = 'vname-line';
+
   const nameEl = document.createElement('div');
   nameEl.className = 'vname';
   nameEl.textContent = name;
 
-  // 2. kolonna – cena + mērvienība
   const priceEl = document.createElement('div');
   priceEl.className = 'vprice';
 
@@ -105,21 +110,29 @@ function createMaterialRow(material, index) {
   if (unit) priceText += ' ' + unit;
   priceEl.textContent = priceText;
 
-  // 3. kolonna – piezīme
+  nameLine.appendChild(nameEl);
+  nameLine.appendChild(priceEl);
+  leftWrap.appendChild(nameLine);
+
   const metaEl = document.createElement('div');
   metaEl.className = 'vmeta';
   metaEl.textContent = note || '';
+  leftWrap.appendChild(metaEl);
 
-  // 4. kolonna – aplītis
+  // === Labā puse: aplītis + statuss + interesēties ===
+  const rightWrap = document.createElement('div');
+  rightWrap.className = 'vright';
+
+  // Aplītis
   const dotEl = document.createElement('span');
   dotEl.className = 'dot ' + dotClass;
 
-  // 5. kolonna – statusa teksts
+  // Statusa teksts
   const statusEl = document.createElement('div');
   statusEl.className = 'avail-text';
   statusEl.textContent = statusText;
 
-  // 6. kolonna – interesēties
+  // Interesēties
   const actionEl = document.createElement('div');
   actionEl.className = 'avail-action';
   if (showInterest) {
@@ -129,13 +142,13 @@ function createMaterialRow(material, index) {
     actionEl.appendChild(link);
   }
 
-  // Pievienojam elementus precīzā secībā
-  row.appendChild(nameEl);
-  row.appendChild(priceEl);
-  row.appendChild(metaEl);
-  row.appendChild(dotEl);
-  row.appendChild(statusEl);
-  row.appendChild(actionEl);
+  rightWrap.appendChild(dotEl);
+  rightWrap.appendChild(statusEl);
+  rightWrap.appendChild(actionEl);
+
+  // Saliekam kopā
+  row.appendChild(leftWrap);
+  row.appendChild(rightWrap);
 
   return row;
 }
