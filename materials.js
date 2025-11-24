@@ -21,10 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updatedEl.textContent = 'Dati atjaunoti: ' + data.lastUpdate;
       }
 
-      // === JAUNS: alfabētiska kārtošana pēc nosaukuma ===
-      const sorted = [...materials].sort((a, b) =>
-        (a.name || '').localeCompare(b.name || '', 'lv', { sensitivity: 'base' })
-      );
+      // === JAUNS: alfabētiska kārtošana pēc nosaukuma (trim + lowercase) ===
+      const sorted = [...materials].sort((a, b) => {
+        const nameA = (a.name || '').toString().trim().toLocaleLowerCase('lv');
+        const nameB = (b.name || '').toString().trim().toLocaleLowerCase('lv');
+
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
 
       // Notīram sarakstu un ieliekam rindas
       listEl.innerHTML = '';
