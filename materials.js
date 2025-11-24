@@ -87,68 +87,56 @@ function createMaterialRow(material, index) {
   row.className = 'vitem';
   row.dataset.materialId = id;
 
-  // === Kreisā puse: nosaukums + cena + piezīme ===
-  const leftWrap = document.createElement('div');
-  leftWrap.className = 'vleft';
+  // Helper teksta šūnām
+  function textCell(extraClass, text) {
+    const el = document.createElement('div');
+    el.className = 'vcell ' + extraClass;
+    el.textContent = text;
+    return el;
+  }
 
-  const nameLine = document.createElement('div');
-  nameLine.className = 'vname-line';
+  // 1. kolonna – materiāls
+  const nameCell = textCell('vcell-name', name);
 
-  const nameEl = document.createElement('div');
-  nameEl.className = 'vname';
-  nameEl.textContent = name;
-
-  const priceEl = document.createElement('div');
-  priceEl.className = 'vprice';
-
+  // 2. kolonna – cena/mērvienība
   const basePrice =
     price !== undefined && price !== null && price !== ''
       ? trimPrice(price)
       : '';
-
   let priceText = basePrice;
   if (unit) priceText += ' ' + unit;
-  priceEl.textContent = priceText;
+  const priceCell = textCell('vcell-price', priceText);
 
-  nameLine.appendChild(nameEl);
-  nameLine.appendChild(priceEl);
-  leftWrap.appendChild(nameLine);
+  // 3. kolonna – piezīme
+  const noteCell = textCell('vcell-note', note || '');
 
-  const metaEl = document.createElement('div');
-  metaEl.className = 'vmeta';
-  metaEl.textContent = note || '';
-  leftWrap.appendChild(metaEl);
+  // 4. kolonna – aplītis
+  const dotCell = document.createElement('div');
+  dotCell.className = 'vcell vcell-dot';
+  const dotSpan = document.createElement('span');
+  dotSpan.className = 'dot ' + dotClass;
+  dotCell.appendChild(dotSpan);
 
-  // === Labā puse: aplītis + statuss + interesēties ===
-  const rightWrap = document.createElement('div');
-  rightWrap.className = 'vright';
+  // 5. kolonna – statuss
+  const statusCell = textCell('vcell-status', statusText);
 
-  // Aplītis
-  const dotEl = document.createElement('span');
-  dotEl.className = 'dot ' + dotClass;
-
-  // Statusa teksts
-  const statusEl = document.createElement('div');
-  statusEl.className = 'avail-text';
-  statusEl.textContent = statusText;
-
-  // Interesēties
-  const actionEl = document.createElement('div');
-  actionEl.className = 'avail-action';
+  // 6. kolonna – interesēties
+  const interestCell = document.createElement('div');
+  interestCell.className = 'vcell vcell-interest';
   if (showInterest) {
     const link = document.createElement('a');
     link.href = 'contact.html#fast-form';
     link.textContent = 'interesēties';
-    actionEl.appendChild(link);
+    interestCell.appendChild(link);
   }
 
-  rightWrap.appendChild(dotEl);
-  rightWrap.appendChild(statusEl);
-  rightWrap.appendChild(actionEl);
-
-  // Saliekam kopā
-  row.appendChild(leftWrap);
-  row.appendChild(rightWrap);
+  // Pievienojam šūnas precīzā secībā
+  row.appendChild(nameCell);
+  row.appendChild(priceCell);
+  row.appendChild(noteCell);
+  row.appendChild(dotCell);
+  row.appendChild(statusCell);
+  row.appendChild(interestCell);
 
   return row;
 }
