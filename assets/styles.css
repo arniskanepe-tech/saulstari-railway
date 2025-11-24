@@ -27,130 +27,79 @@ nav a:hover{color:var(--primary)}
 .footer{padding:18px 0;background:var(--panel);box-shadow:inset 0 1px 0 var(--border);color:var(--muted);font-size:14px}
 .footer .row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 
-/* ===== MATERIĀLU SARAKSTS – JAUNA VERSIJA ===== */
+.vlist{display:flex;flex-direction:column;gap:12px}
+.vitem{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center}
+.vname-line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.vname{font-weight:800;letter-spacing:.2px}
+.vprice{font-weight:800;color:var(--primary)}
+.vmeta{font-size:13px;color:var(--muted)}
 
-.vlist{
+/* ===== PIEEJAMĪBA – IZKĀRTOJUMS ===== */
+/* Tagad flex, viss turas kopā vienā blokā */
+.avail-grid{
   display:flex;
-  flex-direction:column;
+  align-items:center;
   gap:12px;
-}
-
-.vitem{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:12px 16px;
-  box-shadow:var(--shadow);
-
-  display:flex;
   flex-wrap:wrap;
+}
+
+/* punkts + statuss vienā rindā */
+.avail-status-wrap{
+  display:inline-flex;
   align-items:center;
-  column-gap:12px;
-  row-gap:4px;
+  gap:8px;
+  white-space:nowrap; /* Neliels daudzums / Nav pieejams vienā rindā */
 }
 
-/* bāzes šūna */
-.vcell{
-  text-align:left;
+/* šo izmantojam tikai kā placeholder – flex variantā to paslēpjam */
+.avail-spacer{
+  display:none;
 }
 
-/* 1. kolonna – materiāla nosaukums (pirmajā rindā, pa kreisi) */
-.vcell-name{
-  font-weight:800;
-  letter-spacing:.2px;
-  order:1;
-  flex:1 1 auto;
-}
-
-/* 2. kolonna – cena/mērvienība (pirmajā rindā) */
-.vcell-price{
-  font-weight:800;
-  color:var(--primary);
-  order:2;
-  flex:0 0 auto;
-  white-space:nowrap;
-}
-
-/* 4. kolonna – aplītis (pirmajā rindā) */
-.vcell-dot{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  order:3;
-}
-
-/* 5. kolonna – statuss (pirmajā rindā) */
-.vcell-status{
-  order:4;
-  color:var(--muted);
-  white-space:nowrap;
-}
-
-/* 6. kolonna – interesēties (pirmajā rindā, pie labās malas) */
-.vcell-interest{
-  order:5;
-  white-space:nowrap;
-  margin-left:auto;
-}
-.vcell-interest a{
-  color:var(--primary);
-  text-decoration:underline;
-}
-
-/* 3. kolonna – piezīme (OTRĀ rindā, zem nosaukuma) */
-.vcell-note{
-  order:6;
-  flex:1 0 100%;
-  font-size:13px;
-  color:var(--muted);
-}
-
-/* Krāsainie punktiņi */
 .dot{
   display:inline-block;
-  width:12px;
-  height:12px;
+  width:10px;
+  height:10px;
   border-radius:50%;
 }
 .dot.green{background:#2fb344}
 .dot.yellow{background:#f2b01b}
 .dot.red{background:#e74c3c}
-.dot.gray,
-.dot.grey{background:#94a3b8}
+.dot.gray{background:#94a3b8}
+.dot.grey{background:#94a3b8} /* ja nu kādreiz būs 'grey' */
 
-/* ja kaut kur palikusi veca .avail-label – paslēpjam */
-.avail-label{display:none}
-
-/* Mobilajam – mazliet brīvāk ļaujam pārkārtoties */
-@media (max-width: 720px){
-  .vitem{
-    padding:10px 12px;
-    border-radius:12px;
-  }
-  .vcell-name{
-    flex:1 0 100%;
-    margin-bottom:2px;
-  }
-  .vcell-price{
-    order:2;
-  }
-  .vcell-dot{
-    order:3;
-  }
-  .vcell-status{
-    order:4;
-  }
-  .vcell-interest{
-    order:5;
-    margin-left:0;
-  }
-  .vcell-note{
-    order:6;
-    flex:1 0 100%;
-  }
+.avail-text{
+  color:var(--muted);
 }
 
-/* ===== /MATERIĀLI ===== */
+/* pēdējā kolonna – vieta interesēties */
+.avail-action{
+  text-align:left;
+  min-width:auto;
+}
+.avail-action a{
+  color:var(--primary);
+  text-decoration:underline;
+  white-space:nowrap;
+}
+
+/* vecā .avail-label vairs nav vajadzīga, bet ja kur palikusi – paslēpjam */
+.avail-label{
+  display:none;
+}
+
+/* Mobilajā: salaužam pa rindām */
+@media(max-width:780px){
+  .vitem{grid-template-columns:1fr}
+  .avail-grid{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .avail-action{
+    text-align:left;
+    min-width:auto;
+  }
+}
 
 .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
 .badge{display:inline-block;background:var(--accent);color:#27310c;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:800;letter-spacing:.2px}
@@ -166,8 +115,7 @@ nav a:hover{color:var(--primary)}
 /* CTA & MAP */
 .cta-bar{padding:12px 0;background:#ffffffe6;border-top:1px solid var(--border);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
 .cta-bar strong{color:var(--primary)}
-.map-banner{width:100%;height:180px;border:0}
-.map-section{margin-top:22px;box-shadow:var(--shadow);z-index:2}
+.map-banner{width:100%;height:180px;border:0} .map-section{margin-top:22px;box-shadow:var(--shadow);z-index: 2;}
 
 /* Form */
 .form-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px}
@@ -186,25 +134,27 @@ textarea{min-height:110px;resize:vertical}
 /* Hero caption: single line on desktop, wrap on mobile */
 @media (min-width: 1200px) {
   .section.hero .caption{
-    white-space: nowrap;
-    max-width: calc(100% - 160px);
+    white-space: nowrap;                /* nelauž rindas */
+    max-width: calc(100% - 160px);      /* drošības rezerve no malām */
     display: inline-block;
   }
 }
+
+/* Zem 1200px atļaujam lauzt rindas (mobilajam/lielam planšetam) */
 @media (max-width: 1199.98px) {
   .section.hero .caption{
     white-space: normal;
   }
 }
 
-/* Nav teksts -10% un mazliet kompaktāks */
+/* Nav teksts -10% un mazliet kompaktāks, lai logo izskatās lielāks */
 .header nav a{
-  font-size: 0.9em;
-  padding: 10px 14px;
+  font-size: 0.9em;          /* ~-10% pret līdzšinējo */
+  padding: 10px 14px;        /* mazāks “pill” spilventiņš */
   line-height: 1.1;
 }
 
-/* === Saulstari rays === */
+/* === DEBUG: Super visible white 'Saulstari' rays === */
 :root{
   --ray-origin-x: 135px;
   --ray-origin-y: 60px;
@@ -219,7 +169,7 @@ textarea{min-height:110px;resize:vertical}
 .map-wrap,
 .map-frame{
   position: relative;
-  z-index: 2;
+  z-index: 2;             /* <- virs body::after */
 }
 body::after{
   content:"";
@@ -244,9 +194,10 @@ body::after{
   body::after{ opacity: 1.0; }
 }
 
-/* v45: uniform service grid */
+/* v45: uniform service grid (always 3 per row on desktop) */
 .work-grid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 28px; }
-.work-card{ grid-column: auto !important; }
+.work-card{ grid-column: auto !important; } /* cancel any previous spanning rules */
+/* Responsive fallbacks */
 @media (max-width: 1024px){
   .work-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
@@ -277,8 +228,9 @@ body::after{
 /* ===================== */
 /* MOBILĀ IZVĒLNE & BURGER */
 /* ===================== */
+/* HAMBURGER POGA */
 .menu-toggle{
-  display:none;
+  display:none;              /* desktopā neredzama */
   width:40px;
   height:40px;
   padding:8px 6px;
@@ -286,6 +238,8 @@ body::after{
   background:transparent;
   cursor:pointer;
   color:inherit;
+
+  /* svarīgais: saliek 3 līnijas VIENA VIRs OTRAS */
   flex-direction:column;
   justify-content:center;
   align-items:center;
@@ -294,12 +248,13 @@ body::after{
 
 .menu-toggle span{
   display:block;
-  width:20px;
+  width:20px;               /* līnijas garums */
   height:2px;
   border-radius:999px;
-  background:currentColor;
+  background:currentColor;  /* krāsa no tēmas */
 }
 
+/* Pilnekrāna mobilā izvēlne */
 .mobile-menu{
   position:fixed;
   inset:0;
@@ -438,11 +393,12 @@ body.menu-open{
   overflow:hidden;
 }
 
+/* Breakpoint: mobilais */
 @media (max-width: 480px){
   .nav nav{
     display:none;
   }
   .menu-toggle{
-    display:flex;
+    display:flex;           /* nevis inline-flex */
   }
 }
