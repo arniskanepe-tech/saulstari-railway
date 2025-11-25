@@ -110,16 +110,18 @@ function createMaterialRow(material, index) {
 
   priceEl.textContent = priceText;
 
-  nameLine.appendChild(nameEl);
-  nameLine.appendChild(priceEl);
-  leftWrap.appendChild(nameLine);
-
   // meta rindiņa – šeit rādām piezīmi, ja ir
   const metaEl = document.createElement('div');
   metaEl.className = 'vmeta';
   if (note) {
     metaEl.textContent = note;
   }
+
+// Visi trīs blakus vienā rindā
+  nameLine.appendChild(nameEl);
+  nameLine.appendChild(priceEl);
+  nameLine.appendChild(metaEl);
+  
   leftWrap.appendChild(metaEl);
 
   // === Labā puse: pieejamība + interesēties ===
