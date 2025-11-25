@@ -122,7 +122,7 @@ function createMaterialRow(material, index) {
   nameLine.appendChild(priceEl);
   nameLine.appendChild(metaEl);
   
-  leftWrap.appendChild(metaEl);
+  leftWrap.appendChild(nameLine);
 
   // === Labā puse: pieejamība + interesēties ===
   const rightWrap = document.createElement('div');
