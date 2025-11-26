@@ -99,32 +99,6 @@ nav a:hover{color:var(--primary)}
     text-align:left;
     min-width:auto;
   }
-
-  /* >>> JAUNA DAĻA – tikai mobilajiem (≤ 780px) <<< */
-  .vname-line{
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    align-items: baseline;
-    gap: 4px 8px;
-  }
-
-  .vname{
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .vprice{
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: flex-start;
-    white-space: nowrap;  /* 7.50 €/t vienā rindā */
-  }
-
-  .vmeta{
-    grid-column: 1 / -1;  /* apraksts pa visu platumu */
-    grid-row: 2;
-    margin-top: 2px;
-  }
 }
 
 .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
