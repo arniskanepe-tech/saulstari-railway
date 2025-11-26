@@ -117,12 +117,14 @@ nav a:hover{color:var(--primary)}
     min-width: auto;
   }
 
-  /* vline pārkārtojums */
+  /* vārds + cena 1. rindā, apraksts 2. rindā */
   .vname-line{
-    grid-template-columns: auto auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr;   /* fiksēta proporcija visām kartēm */
     grid-template-rows: auto auto;
-    align-items: baseline;
-    gap: 4px 8px;
+    column-gap: 8px;
+    row-gap: 4px;
+    align-items: start;
   }
 
   .vname{
@@ -133,12 +135,13 @@ nav a:hover{color:var(--primary)}
   .vprice{
     grid-column: 2;
     grid-row: 1;
-    justify-self: flex-start;
-    white-space: nowrap;
+    justify-self: end;      /* pievilkt pie labās malas */
+    white-space: nowrap;    /* 11 €/m3 vienā rindā */
+    text-align: right;
   }
 
   .vmeta{
-    grid-column: 1 / -1;
+    grid-column: 1 / -1;    /* apraksts pa visu platumu */
     grid-row: 2;
     margin-top: 2px;
   }
