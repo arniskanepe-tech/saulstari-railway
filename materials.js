@@ -51,13 +51,26 @@ function createMaterialRow(material, index) {
   const name = material.name || '';
   const price = material.price;
   const unit = material.unit || '';
-  const note = (material.notes || '').toString().trim();
 
-  // Pieejamība (no availability vai status)
-  const availability = (material.availability || material.status || '')
+  // ņemam vērā gan note, gan veco notes
+  const note = (material.note || material.notes || '').toString().trim();
+
+  // Pieejamība
+  let availability = (material.availability || material.status || '')
     .toString()
     .trim()
     .toLowerCase();
+
+  const isAvailable = material.available; // boolean no DB
+
+  // ja status/availability nav, atvasinām no available
+  if (!availability) {
+    if (isAvailable === false) {
+      availability = 'nav pieejams';
+    } else if (isAvailable === true) {
+      availability = 'pieejams';
+    }
+  }
 
   let dotClass = 'gray';
   let statusText = '';
@@ -117,11 +130,11 @@ function createMaterialRow(material, index) {
     metaEl.textContent = note;
   }
 
-// Visi trīs blakus vienā rindā
+  // Visi trīs blakus vienā rindā (layout kontrolē CSS)
   nameLine.appendChild(nameEl);
   nameLine.appendChild(priceEl);
   nameLine.appendChild(metaEl);
-  
+
   leftWrap.appendChild(nameLine);
 
   // === Labā puse: pieejamība + interesēties ===
