@@ -30,9 +30,16 @@ async function initDb() {
       price NUMERIC(10,2),
       unit TEXT,
       available BOOLEAN DEFAULT true,
+      status TEXT,
       note TEXT,
       order_index INT DEFAULT 0
     );
+  `);
+
+  // Ja materials tabula jau eksistē bez status kolonnas – pievienojam
+  await pool.query(`
+    ALTER TABLE materials
+    ADD COLUMN IF NOT EXISTS status TEXT;
   `);
 
   await pool.query(`
@@ -63,9 +70,9 @@ async function initDb() {
       await pool.query(
         `
         INSERT INTO materials
-          (slug, name, category, price, unit, available, note, order_index)
+          (slug, name, category, price, unit, available, status, note, order_index)
         VALUES
-          ($1,$2,$3,$4,$5,$6,$7,$8)
+          ($1,$2,$3,$4,$5,$6,$7,$8,$9)
         ON CONFLICT (slug) DO NOTHING
       `,
         [
@@ -74,7 +81,10 @@ async function initDb() {
           m.category || "",
           m.price != null ? m.price : null,
           m.unit || m.mervienība || m.measure || "",
+          // Ja vecajos datos bija availability/status, mēģinām to izmantot,
+          // bet available boolean turam kā pamatvērtību
           m.available !== false,
+          (m.status || m.availability || "").toString().trim(),
           m.note || m.comment || m.piezime || "",
           i,
         ]
@@ -144,9 +154,9 @@ app.put("/api/materials", async (req, res) => {
       await client.query(
         `
         INSERT INTO materials
-          (slug, name, category, price, unit, available, note, order_index)
+          (slug, name, category, price, unit, available, status, note, order_index)
         VALUES
-          ($1,$2,$3,$4,$5,$6,$7,$8)
+          ($1,$2,$3,$4,$5,$6,$7,$8,$9)
       `,
         [
           m.slug || m.id || String(i + 1),
@@ -155,6 +165,7 @@ app.put("/api/materials", async (req, res) => {
           m.price != null ? m.price : null,
           m.unit || m.mervienība || m.measure || "",
           m.available !== false,
+          (m.status || m.availability || "").toString().trim(),
           m.note || m.comment || m.piezime || "",
           i,
         ]
