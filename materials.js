@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Kopējais atjaunošanas datums
       if (updatedEl && data.lastUpdate) {
-        updatedEl.textContent = 'Dati atjaunoti: ' + data.lastUpdate;
+      const date = new Date(data.lastUpdate);
+      const formatted = date.toLocaleString('lv-LV').replace(',', '');
+      updatedEl.textContent = 'Dati atjaunoti: ' + formatted;
       }
 
       // Alfabētiska kārtošana pēc nosaukuma
