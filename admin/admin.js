@@ -21,6 +21,25 @@ let materialsData = {
   materials: [],
 };
 
+// Palīgfunkcija datuma attēlošanai "03.12.2025 11:44" formātā
+function formatLastUpdateForDisplay(value) {
+  if (!value) return '';
+
+  const dateObj = value instanceof Date ? value : new Date(value);
+  if (isNaN(dateObj)) {
+    // ja neizdodas parsēt, atstājam, kā ir
+    return String(value);
+  }
+
+  return dateObj.toLocaleString('lv-LV', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 // Inicializācija
 initAdmin();
 
@@ -41,7 +60,10 @@ function initAdmin() {
       if (confirm('Vai tiešām dzēst šo materiālu?')) {
         materialsData.materials.splice(index, 1);
         renderTable();
-        setSaveStatus('Materiāls izdzēsts (neaizmirsti nospiest "Saglabāt izmaiņas").', 'info');
+        setSaveStatus(
+          'Materiāls izdzēsts (neaizmirsti nospiest "Saglabāt izmaiņas").',
+          'info'
+        );
       }
     });
   }
@@ -64,7 +86,7 @@ function loadFromServer() {
       sortMaterialsByName();
 
       if (lastUpdateInput) {
-        lastUpdateInput.value = materialsData.lastUpdate || '';
+        lastUpdateInput.value = formatLastUpdateForDisplay(materialsData.lastUpdate);
       }
 
       renderTable();
@@ -137,10 +159,10 @@ function renderTable() {
     notesArea.value = (mat.note || mat.notes || '').toString();
     notesTd.appendChild(notesArea);
     tr.appendChild(notesTd);
-    
+
     // ID — PASLĒPTS
     const idTd = document.createElement('td');
-    idTd.className = 'visually-hidden';   // ← ŠEIT ID tiek paslēpts
+    idTd.className = 'visually-hidden';
     const idSpan = document.createElement('span');
     idSpan.className = 'admin-id-pill';
     idSpan.textContent = mat.id || generateIdFromName(mat.name, index);
@@ -173,7 +195,10 @@ function handleAddRow() {
   sortMaterialsByName();
   renderTable();
 
-  setSaveStatus('Pievienots jauns materiāls (neaizmirsti nospiest "Saglabāt izmaiņas").', 'info');
+  setSaveStatus(
+    'Pievienots jauns materiāls (neaizmirsti nospiest "Saglabāt izmaiņas").',
+    'info'
+  );
 }
 
 function handleSave() {
@@ -182,7 +207,9 @@ function handleSave() {
   const rows = Array.from(tableBody.querySelectorAll('tr'));
 
   materialsData.materials = rows.map((row, index) => {
-    const [nameTd, priceTd, unitTd, statusTd, notesTd, idTd] = Array.from(row.children);
+    const [nameTd, priceTd, unitTd, statusTd, notesTd, idTd] = Array.from(
+      row.children
+    );
 
     const name = nameTd.querySelector('input').value.trim();
     const priceStr = priceTd.querySelector('input').value.trim();
@@ -198,16 +225,16 @@ function handleSave() {
     return { id, name, price, unit, availability, note: notes };
   });
 
-  const now = new Date().toLocaleString('lv-LV', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  // Jauns datums
+  const now = new Date();
 
-  materialsData.lastUpdate = now;
-  if (lastUpdateInput) lastUpdateInput.value = now;
+  // → uz serveri glabājam ISO formātā
+  materialsData.lastUpdate = now.toISOString();
+
+  // → admin laukā rādām skaisto formātu
+  if (lastUpdateInput) {
+    lastUpdateInput.value = formatLastUpdateForDisplay(now);
+  }
 
   setSaveStatus('Saglabāju izmaiņas...', 'info');
 
