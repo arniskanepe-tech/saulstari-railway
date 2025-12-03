@@ -18,9 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Kopējais atjaunošanas datums
       if (updatedEl && data.lastUpdate) {
-      const date = new Date(data.lastUpdate);
-      const formatted = date.toLocaleString('lv-LV').replace(',', '');
-      updatedEl.textContent = 'Dati atjaunoti: ' + formatted;
+        const d = new Date(data.lastUpdate);
+
+        if (!isNaN(d.getTime())) {
+          const dd = String(d.getDate()).padStart(2, '0');
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const yyyy = d.getFullYear();
+
+          const hh = String(d.getHours()).padStart(2, '0');
+          const min = String(d.getMinutes()).padStart(2, '0');
+          const ss = String(d.getSeconds()).padStart(2, '0');
+
+          const formatted = `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`;
+          updatedEl.textContent = 'Dati atjaunoti: ' + formatted;
+        } else {
+          // Ja datuma parsēšana neizdodas, rādam, kā ir
+          updatedEl.textContent = 'Dati atjaunoti: ' + data.lastUpdate;
+        }
       }
 
       // Alfabētiska kārtošana pēc nosaukuma
