@@ -195,7 +195,7 @@ function handleSave() {
 
     const price = priceStr === '' ? '' : Number(priceStr);
 
-    return { id, name, price, unit, availability, notes };
+    return { id, name, price, unit, availability, note: notes };
   });
 
   const now = new Date().toLocaleString('lv-LV', {
