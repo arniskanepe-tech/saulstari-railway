@@ -49,7 +49,7 @@
         <span class="icon-phone">📞</span>
         <span>+37120044910</span>
       </a>
-      <a href="https://wa.me/37120044910" class="mobile-whatsapp">
+      <a href="https://wa.me/37120044910" class="mobile-whatsapp" target="_blank" rel="noopener">
         <span class="wa-badge">WA</span>
         <span>WhatsApp</span>
       </a>
@@ -78,8 +78,13 @@
 <div><label for="amount">Aptuvenais apjoms</label><input id="amount" placeholder="piem., 30 m³ vai 20 t"></div>
 <div><label for="date">Vēlamais termiņš</label><input id="date" type="date"></div>
 <div class="wide"><label for="address">Piegādes adrese</label><input id="address" placeholder="Adrese, novads"></div>
-<div class="wide"><label for="message">Papildu informācija</label><textarea id="message" placeholder="Īss apraksts par vajadzībām"></textarea><div class="help">Piezīme: “Nosūtīt” atvērs Jūsu e‑pastu ar aizpildītu vēstuli uz info@karjerssaulstari.lv</div></div>
-</div><div class="btn-wrap" style="margin-top:12px"><button type="submit" class="btn">Nosūtīt e-pastu</button> <a class="btn secondary" href="tel:+37120044910">WhatsApp</a></div></form>
+<div class="wide"><label for="message">Papildu informācija</label><textarea id="message" placeholder="Īss apraksts par vajadzībām"></textarea><div class="help">Piezīme: “Nosūtīt” atvērs Jūsu e-pastu ar aizpildītu vēstuli uz info@karjerssaulstari.lv</div></div>
+</div><div class="btn-wrap" style="margin-top:12px">
+  <button type="submit" class="btn">Nosūtīt e-pastu</button>
+  <a class="btn secondary" href="https://wa.me/37120044910" target="_blank" rel="noopener">
+    WhatsApp
+  </a>
+</div></form>
 </div></div></section>
 
   <!-- JAUNAIS BLOKS AR UZŅĒMUMA REKVIZĪTIEM -->
@@ -97,7 +102,6 @@
   </div>
 </section>
 
-  
 <section class="map-section"><iframe class="map-banner" src="https://www.google.com/maps?q=Karjers%20Saulstari%20Salaspils&output=embed" loading="lazy"></iframe></section>
 
 <script>
@@ -139,47 +143,11 @@ document.getElementById('qform').addEventListener('submit',function(e){
   window.location.href='mailto:info@karjerssaulstari.lv?subject='+subject+'&body='+encodeURIComponent(body);
 });
 </script>
-<footer class="footer"><div class="container"><div class="row"><div>© 2025 Karjers “Saulstari”.</div><div><span class="badge">Darba dienās 7:00–18:00</span> · Tel. <a href="tel:+37120044910">+371 20044910</a></div></div></div></footer>  <script src="assets/js/focal.js"></script>
+<footer class="footer"><div class="container"><div class="row"><div>© 2025 Karjers “Saulstari”.</div><div><span class="badge">Darba dienās 7:00–18:00</span> · Tel. <a href="tel:+37120044910">+371 20044910</a></div></div></div></footer>
+<script src="assets/js/focal.js"></script>
 <script src="assets/js/focal.js"></script>
 <script src="assets/js/theme-switcher.js"></script>
 <script src="assets/js/rays-origin.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector('a.btn.secondary[href^="tel:"]');
-  if (!btn) return;
-
-  // Number in both formats
-  const PHONE_PLUS  = "+37120044910"; // for whatsapp:// schemes (must include +)
-  const PHONE_PLAIN = "37120044910";  // for wa.me (no +, no spaces)
-
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    if (isMobile) {
-      // Try native WhatsApp audio call
-      const try1 = `whatsapp://audio?phone=${encodeURIComponent(PHONE_PLUS)}`;
-      const try2 = `whatsapp://call?phone=${encodeURIComponent(PHONE_PLUS)}`; // secondary
-      let opened = false;
-      const vis = () => { if (document.hidden) opened = true; };
-      document.addEventListener("visibilitychange", vis, { once: true });
-
-      window.location.href = try1;
-      setTimeout(() => {
-        if (!opened) {
-          window.location.href = try2;
-          setTimeout(() => { if (!opened) window.location.href = `https://wa.me/${PHONE_PLAIN}`; }, 700);
-        }
-      }, 900);
-    } else {
-      // Desktop: Web/Desktop cannot be forced to start a call; open chat
-      window.open(`https://wa.me/${PHONE_PLAIN}`, "_blank", "noopener");
-    }
-  });
-});
-</script>
-  <script src="assets/js/mobile-menu.js"></script>
+<script src="assets/js/mobile-menu.js"></script>
 </body>
 </html>
