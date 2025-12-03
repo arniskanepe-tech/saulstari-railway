@@ -36,17 +36,17 @@ async function initDb() {
     );
   `);
 
-  // Ja materials tabula jau eksistē bez status kolonnas – pievienojam
-  await pool.query(`
-    ALTER TABLE materials
-    ADD COLUMN IF NOT EXISTS status TEXT;
-  `);
-
   await pool.query(`
     CREATE TABLE IF NOT EXISTS materials_updates (
       id SERIAL PRIMARY KEY,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+  `);
+
+  // gadījumam, ja tabula jau bija izveidota bez status
+  await pool.query(`
+    ALTER TABLE materials
+    ADD COLUMN IF NOT EXISTS status TEXT;
   `);
 
   // 2) Ja tabula tukša – ieimportē no data/materials.json
@@ -67,6 +67,27 @@ async function initDb() {
     for (let i = 0; i < items.length; i++) {
       const m = items[i];
 
+      const statusRaw = (m.status || m.availability || "").toString().trim();
+      let available = m.available;
+
+      // ja available nav, atvasinām no status teksta
+      if (available === undefined || available === null) {
+        if (!statusRaw) {
+          available = true;
+        } else if (statusRaw.toLowerCase() === "nav pieejams") {
+          available = false;
+        } else {
+          available = true;
+        }
+      }
+
+      const note =
+        m.note ||
+        m.notes ||
+        m.comment ||
+        m.piezime ||
+        "";
+
       await pool.query(
         `
         INSERT INTO materials
@@ -81,11 +102,9 @@ async function initDb() {
           m.category || "",
           m.price != null ? m.price : null,
           m.unit || m.mervienība || m.measure || "",
-          // Ja vecajos datos bija availability/status, mēģinām to izmantot,
-          // bet available boolean turam kā pamatvērtību
-          m.available !== false,
-          (m.status || m.availability || "").toString().trim(),
-          m.note || m.comment || m.piezime || "",
+          available,
+          statusRaw,
+          note,
           i,
         ]
       );
@@ -151,6 +170,27 @@ app.put("/api/materials", async (req, res) => {
     for (let i = 0; i < materials.length; i++) {
       const m = materials[i];
 
+      const statusRaw = (m.status || m.availability || "").toString().trim();
+      let available = m.available;
+
+      // ja admin nedeva available, atvasinām no status
+      if (available === undefined || available === null) {
+        if (!statusRaw) {
+          available = true;
+        } else if (statusRaw.toLowerCase() === "nav pieejams") {
+          available = false;
+        } else {
+          available = true;
+        }
+      }
+
+      const note =
+        m.note ||
+        m.notes ||
+        m.comment ||
+        m.piezime ||
+        "";
+
       await client.query(
         `
         INSERT INTO materials
@@ -164,9 +204,9 @@ app.put("/api/materials", async (req, res) => {
           m.category || "",
           m.price != null ? m.price : null,
           m.unit || m.mervienība || m.measure || "",
-          m.available !== false,
-          (m.status || m.availability || "").toString().trim(),
-          m.note || m.comment || m.piezime || "",
+          available,
+          statusRaw,
+          note,
           i,
         ]
       );
