@@ -16,36 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ? data
         : (data.materials || data.items || []);
 
-      // Kopējais atjaunošanas datums
+      // Kopējais atjaunošanas datums – RĀDAM TIEŠI KĀ SAGLABĀTS
       if (updatedEl && data.lastUpdate) {
-        const raw = String(data.lastUpdate).trim();
-        let formatted = raw;
-
-        // 1) mēģinām parsēt formātu DD.MM.YYYY HH:MM(:SS)
-        const m = raw.match(/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})(?::(\d{2}))?/);
-        if (m) {
-          const dd = m[1];
-          const mm = m[2];
-          const yyyy = m[3];
-          const hh = m[4];
-          const min = m[5];
-          const ss = m[6] || '00';
-          formatted = `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`;
-        } else {
-          // 2) ja ir ISO vai cits normāls formāts, izmantojam Date
-          const d = new Date(raw);
-          if (!isNaN(d.getTime())) {
-            const dd = String(d.getDate()).padStart(2, '0');
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const yyyy = d.getFullYear();
-            const hh = String(d.getHours()).padStart(2, '0');
-            const min = String(d.getMinutes()).padStart(2, '0');
-            const ss = String(d.getSeconds()).padStart(2, '0');
-            formatted = `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`;
-          }
-        }
-
-        updatedEl.textContent = 'Dati atjaunoti: ' + formatted;
+        updatedEl.textContent =
+          'Dati atjaunoti: ' + String(data.lastUpdate).trim();
       }
 
       // Alfabētiska kārtošana pēc nosaukuma
