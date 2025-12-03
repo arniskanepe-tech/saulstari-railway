@@ -1,5 +1,23 @@
 // materials.js – ģenerē materiālu sarakstu sākumlapā no /api/materials
 
+// Palīgfunkcija datuma attēlošanai "03.12.2025 11:44" formātā
+function formatLastUpdateForDisplay(value) {
+  if (!value) return '';
+
+  const dateObj = value instanceof Date ? value : new Date(value);
+  if (isNaN(dateObj)) {
+    return String(value);
+  }
+
+  return dateObj.toLocaleString('lv-LV', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const listEl = document.querySelector('[data-materials-list]');
   const updatedEl = document.getElementById('home-materials-updated');
@@ -16,10 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ? data
         : (data.materials || data.items || []);
 
-      // Kopējais atjaunošanas datums – rādam tieši tādu, kāds nāk no API
+      // Kopējais atjaunošanas datums – formatējam glīši
       if (updatedEl && data.lastUpdate) {
-        updatedEl.textContent =
-          'Dati atjaunoti: ' + String(data.lastUpdate).trim();
+        const formatted = formatLastUpdateForDisplay(data.lastUpdate);
+        updatedEl.textContent = 'Dati atjaunoti: ' + formatted;
       }
 
       // Alfabētiska kārtošana pēc nosaukuma
