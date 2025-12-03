@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ? data
         : (data.materials || data.items || []);
 
-      // Kopējais atjaunošanas datums – RĀDAM TIEŠI KĀ SAGLABĀTS
+      // Kopējais atjaunošanas datums – rādam tieši tādu, kāds nāk no API
       if (updatedEl && data.lastUpdate) {
         updatedEl.textContent =
           'Dati atjaunoti: ' + String(data.lastUpdate).trim();
