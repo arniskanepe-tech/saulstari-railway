@@ -134,10 +134,10 @@ function renderTable() {
     const notesTd = document.createElement('td');
     const notesArea = document.createElement('textarea');
     notesArea.rows = 1;
-    notesArea.value = mat.notes || '';
+    notesArea.value = (mat.note || mat.notes || '').toString();
     notesTd.appendChild(notesArea);
     tr.appendChild(notesTd);
-
+    
     // ID — PASLĒPTS
     const idTd = document.createElement('td');
     idTd.className = 'visually-hidden';   // ← ŠEIT ID tiek paslēpts
