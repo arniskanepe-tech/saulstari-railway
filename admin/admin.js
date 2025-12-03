@@ -60,7 +60,7 @@ function loadFromServer() {
         materials: Array.isArray(data.materials) ? data.materials : [],
       };
 
-      // JAUNS: sakārtojam admin materiālus alfabētiskā secībā pēc nosaukuma
+      // sakārtojam materiālus alfabētiski
       sortMaterialsByName();
 
       if (lastUpdateInput) {
@@ -117,7 +117,7 @@ function renderTable() {
     unitTd.appendChild(unitSelect);
     tr.appendChild(unitTd);
 
-    // Statuss / Pieejamība
+    // Statuss
     const statusTd = document.createElement('td');
     const statusSelect = document.createElement('select');
     STATUS_OPTIONS.forEach((s) => {
@@ -138,15 +138,16 @@ function renderTable() {
     notesTd.appendChild(notesArea);
     tr.appendChild(notesTd);
 
-    // ID (read-only)
+    // ID — PASLĒPTS
     const idTd = document.createElement('td');
+    idTd.className = 'visually-hidden';   // ← ŠEIT ID tiek paslēpts
     const idSpan = document.createElement('span');
     idSpan.className = 'admin-id-pill';
     idSpan.textContent = mat.id || generateIdFromName(mat.name, index);
     idTd.appendChild(idSpan);
     tr.appendChild(idTd);
 
-    // Dzēst poga
+    // Dzēst
     const deleteTd = document.createElement('td');
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
@@ -169,10 +170,9 @@ function handleAddRow() {
     notes: '',
   });
 
-  // JAUNS: pēc pievienošanas pārkārtojam pēc nosaukuma
   sortMaterialsByName();
-
   renderTable();
+
   setSaveStatus('Pievienots jauns materiāls (neaizmirsti nospiest "Saglabāt izmaiņas").', 'info');
 }
 
@@ -182,9 +182,7 @@ function handleSave() {
   const rows = Array.from(tableBody.querySelectorAll('tr'));
 
   materialsData.materials = rows.map((row, index) => {
-    const [nameTd, priceTd, unitTd, statusTd, notesTd, idTd] = Array.from(
-      row.children
-    );
+    const [nameTd, priceTd, unitTd, statusTd, notesTd, idTd] = Array.from(row.children);
 
     const name = nameTd.querySelector('input').value.trim();
     const priceStr = priceTd.querySelector('input').value.trim();
@@ -200,7 +198,7 @@ function handleSave() {
     return { id, name, price, unit, availability, notes };
   });
 
-   const now = new Date().toLocaleString('lv-LV', {
+  const now = new Date().toLocaleString('lv-LV', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -208,11 +206,8 @@ function handleSave() {
     minute: '2-digit',
   });
 
-    materialsData.lastUpdate = now;
-
-    if (lastUpdateInput) {
-    lastUpdateInput.value = now;
-}
+  materialsData.lastUpdate = now;
+  if (lastUpdateInput) lastUpdateInput.value = now;
 
   setSaveStatus('Saglabāju izmaiņas...', 'info');
 
