@@ -8,6 +8,33 @@ const { Pool } = require("pg");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// ==== Admin autentifikācija =============================
+
+// Lietotājvārds un parole tiek ņemti no vides mainīgajiem
+const ADMIN_USER = process.env.ADMIN_USER || "admin";
+const ADMIN_PASS = process.env.ADMIN_PASS || "saulstari123";
+
+// Middleware, kas prasa Basic Auth
+function requireAdminAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Basic ")) {
+    res.set("WWW-Authenticate", 'Basic realm="Saulstari Admin"');
+    return res.status(401).send("Nepieciešama autorizācija");
+  }
+
+  const base64Credentials = authHeader.split(" ")[1];
+  const credentials = Buffer.from(base64Credentials, "base64").toString("utf8");
+  const [user, pass] = credentials.split(":");
+
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    return next();
+  }
+
+  res.set("WWW-Authenticate", 'Basic realm="Saulstari Admin"');
+  return res.status(401).send("Nepareizs lietotājvārds vai parole");
+}
+
 // ==== PostgreSQL pieslēgums ===========================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -118,7 +145,7 @@ async function initDb() {
   }
 }
 
-// palaidam inicializāciju (bez panikas, ja Railway restartējas)
+// palaidam inicializāciju (bez panikas, ja Railway/Render restartējas)
 initDb().catch((err) => {
   console.error("DB inicializācijas kļūda:", err);
 });
@@ -126,6 +153,9 @@ initDb().catch((err) => {
 // ==== Vidus slānis / statiskie faili ===================
 
 app.use(express.json());
+
+// Vispirms aizsargājam /admin ar paroli
+app.use("/admin", requireAdminAuth);
 
 // statiskie faili – lai darbojas index.html, materials.html utt.
 app.use(express.static(path.join(__dirname)));
@@ -155,7 +185,7 @@ app.get("/api/materials", async (req, res) => {
 // admin.js sūta:
 //  { materials: [...], lastUpdate: "2025-10-28 13:46" }
 
-app.put("/api/materials", async (req, res) => {
+app.put("/api/materials", requireAdminAuth, async (req, res) => {
   const { materials, lastUpdate } = req.body || {};
 
   if (!Array.isArray(materials)) {
