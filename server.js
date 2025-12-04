@@ -11,8 +11,8 @@ const PORT = process.env.PORT || 8080;
 // ==== Admin autentifikācija =============================
 
 // Lietotājvārds un parole tiek ņemti no vides mainīgajiem
-const ADMIN_USER = process.env.ADMIN_USER || "admin";
-const ADMIN_PASS = process.env.ADMIN_PASS || "saulstari123";
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASS = process.env.ADMIN_PASS;
 
 // Middleware, kas prasa Basic Auth
 function requireAdminAuth(req, res, next) {
