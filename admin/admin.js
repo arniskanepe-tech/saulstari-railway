@@ -21,6 +21,9 @@ let materialsData = {
   materials: [],
 };
 
+// Jaunais: loma (admin/staff)
+let CURRENT_ROLE = 'admin';
+
 // Palīgfunkcija datuma attēlošanai "03.12.2025 11:44" formātā
 function formatLastUpdateForDisplay(value) {
   if (!value) return '';
@@ -43,14 +46,24 @@ function formatLastUpdateForDisplay(value) {
 // Inicializācija
 initAdmin();
 
-function initAdmin() {
+async function initAdmin() {
+  // Ielādējam lomu no servera (admin vai staff)
+  await loadRole();
+
   if (reloadBtn) reloadBtn.addEventListener('click', loadFromServer);
   if (saveBtn) saveBtn.addEventListener('click', handleSave);
-  if (addRowBtn) addRowBtn.addEventListener('click', handleAddRow);
+
+  // staff režīmā neliekam pat klausītāju pie "Pievienot materiālu"
+  if (addRowBtn && CURRENT_ROLE !== 'staff') {
+    addRowBtn.addEventListener('click', handleAddRow);
+  }
 
   // Dzēšanas poga (event delegation)
   if (tableBody) {
     tableBody.addEventListener('click', (e) => {
+      // staff nedrīkst dzēst
+      if (CURRENT_ROLE === 'staff') return;
+
       const btn = e.target.closest('.delete-material-btn');
       if (!btn) return;
       const row = btn.closest('tr');
@@ -68,7 +81,33 @@ function initAdmin() {
     });
   }
 
+  // UI: staff režīmā paslēpjam "Pievienot materiālu"
+  if (CURRENT_ROLE === 'staff' && addRowBtn) {
+    addRowBtn.style.display = 'none';
+  }
+
   loadFromServer();
+}
+
+function loadRole() {
+  // Šis izmanto to pašu Basic Auth, ko pārlūks jau iedod /admin lapai
+  return fetch('/api/me', { cache: 'no-store' })
+    .then((r) => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then((data) => {
+      CURRENT_ROLE = (data && data.role) ? data.role : 'admin';
+
+      // staff režīmā: nelabojam "Kopējais atjaunošanas datums" lauku
+      if (CURRENT_ROLE === 'staff' && lastUpdateInput) {
+        lastUpdateInput.disabled = true;
+      }
+    })
+    .catch(() => {
+      // ja kas noiet greizi, uzvedamies kā admin (nekā nelaužam)
+      CURRENT_ROLE = 'admin';
+    });
 }
 
 function loadFromServer() {
@@ -112,6 +151,7 @@ function renderTable() {
     const nameInput = document.createElement('input');
     nameInput.type = 'text';
     nameInput.value = mat.name || '';
+    if (CURRENT_ROLE === 'staff') nameInput.disabled = true;
     nameTd.appendChild(nameInput);
     tr.appendChild(nameTd);
 
@@ -123,6 +163,7 @@ function renderTable() {
     priceInput.min = '0';
     priceInput.value =
       mat.price !== undefined && mat.price !== null ? String(mat.price) : '';
+    if (CURRENT_ROLE === 'staff') priceInput.disabled = true;
     priceTd.appendChild(priceInput);
     tr.appendChild(priceTd);
 
@@ -136,6 +177,7 @@ function renderTable() {
       if (mat.unit === u) opt.selected = true;
       unitSelect.appendChild(opt);
     });
+    if (CURRENT_ROLE === 'staff') unitSelect.disabled = true;
     unitTd.appendChild(unitSelect);
     tr.appendChild(unitTd);
 
@@ -175,6 +217,9 @@ function renderTable() {
     deleteBtn.type = 'button';
     deleteBtn.className = 'btn btn-danger delete-material-btn';
     deleteBtn.textContent = 'Dzēst';
+    if (CURRENT_ROLE === 'staff') {
+      deleteBtn.style.display = 'none';
+    }
     deleteTd.appendChild(deleteBtn);
     tr.appendChild(deleteTd);
 
@@ -183,6 +228,9 @@ function renderTable() {
 }
 
 function handleAddRow() {
+  // staff drošībai: ja tomēr kaut kā izsauc
+  if (CURRENT_ROLE === 'staff') return;
+
   materialsData.materials.push({
     id: '',
     name: 'Jauns materiāls',
@@ -231,7 +279,7 @@ function handleSave() {
   // → uz serveri glabājam ISO formātā
   materialsData.lastUpdate = now.toISOString();
 
-  // → admin laukā rādām skaisto formātu
+  // → admin laukā rādām skaisto formātu (staff režīmā lauks ir disabled, bet vērtību var uzlikt)
   if (lastUpdateInput) {
     lastUpdateInput.value = formatLastUpdateForDisplay(now);
   }
