@@ -179,6 +179,41 @@ initDb().catch((err) => {
 
 app.use(express.json());
 
+/**
+ * =======================================================
+ * ROOT -> WWW + HTTP -> HTTPS pāradresācija
+ * - karjerssaulstari.lv/*  -> https://www.karjerssaulstari.lv/*
+ * - strādā aiz proxy (Railway), izmanto X-Forwarded-Proto
+ * =======================================================
+ */
+const CANONICAL_HOST = "www.karjerssaulstari.lv";
+
+app.enable("trust proxy"); // lai req.protocol pareizi strādā aiz Railway proxy
+
+app.use((req, res, next) => {
+  const host = (req.headers.host || "").toLowerCase();
+  const proto = (req.headers["x-forwarded-proto"] || req.protocol || "http")
+    .toString()
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
+
+  // ja ienāk uz root (bez www), pārsūtam uz www (saglabājam path + query)
+  const isRootDomain =
+    host === "karjerssaulstari.lv" || host === "karjerssaulstari.lv:80" || host === "karjerssaulstari.lv:443";
+
+  const needsWww = isRootDomain;
+  const needsHttps = proto !== "https";
+
+  if (needsWww || needsHttps) {
+    const targetHost = CANONICAL_HOST;
+    const targetProto = "https";
+    return res.redirect(301, `${targetProto}://${targetHost}${req.originalUrl}`);
+  }
+
+  return next();
+});
+
 // Vispirms aizsargājam /admin ar paroli
 app.use("/admin", requireAdminAuth);
 
