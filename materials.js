@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Kopējais atjaunošanas datums – formatējam glīši
       if (updatedEl && data.lastUpdate) {
         const formatted = formatLastUpdateForDisplay(data.lastUpdate);
-        updatedEl.textContent = 'Dati atjaunoti: ' + formatted;
+        updatedEl.textContent = 'Cenas noradītas bez PVN. Dati atjaunoti: ' + formatted;
       }
 
       // Alfabētiska kārtošana pēc nosaukuma
