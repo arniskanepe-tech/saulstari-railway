@@ -237,7 +237,6 @@ app.post("/api/login", (req, res) => {
       httpOnly: true,
       sameSite: "lax",
       secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     });
     return res.json({ ok: true, role: "admin" });
