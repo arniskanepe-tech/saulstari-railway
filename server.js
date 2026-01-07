@@ -5,6 +5,9 @@ const path = require("path");
 const fs = require("fs/promises");
 const { Pool } = require("pg");
 
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -18,46 +21,45 @@ const ADMIN_PASS = process.env.ADMIN_PASS;
 const STAFF_USER = process.env.STAFF_USER;
 const STAFF_PASS = process.env.STAFF_PASS;
 
-function parseBasicAuth(req) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Basic ")) return null;
-
-  const base64Credentials = authHeader.split(" ")[1];
-  const credentials = Buffer.from(base64Credentials, "base64").toString("utf8");
-  const [user, pass] = credentials.split(":");
-  if (!user) return null;
-
-  return { user, pass };
+// Session secret (Railway Variables)
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+  console.error("❌ Nav uzlikts SESSION_SECRET (Railway Variables).");
+  process.exit(1);
 }
 
-// Middleware, kas prasa Basic Auth (admin VAI staff)
-// + uzliek req.userRole = "admin" | "staff"
-function requireAdminAuth(req, res, next) {
-  const creds = parseBasicAuth(req);
+// ==== Cookie + JWT (iPhone PWA draudzīgi) ================
 
-  if (!creds) {
-    res.set("WWW-Authenticate", 'Basic realm="Saulstari Admin"');
-    return res.status(401).send("Nepieciešama autorizācija");
+function signToken(payload) {
+  return jwt.sign(payload, SESSION_SECRET, { expiresIn: "7d" });
+}
+
+function authFromCookie(req, res, next) {
+  const token = req.cookies?.saulstari_token;
+  if (!token) return next();
+
+  try {
+    const data = jwt.verify(token, SESSION_SECRET);
+    req.userRole = data.role;   // "admin" | "staff"
+    req.authUser = data.user;
+  } catch (e) {
+    // slikts/novecojis tokens -> ignorējam
+  }
+  return next();
+}
+
+function requireLogin(req, res, next) {
+  if (req.userRole) return next();
+
+  const accept = (req.headers.accept || "").toLowerCase();
+
+  // HTML lapām pāradresējam uz login formu
+  if (accept.includes("text/html")) {
+    return res.redirect("/admin/login.html");
   }
 
-  const { user, pass } = creds;
-
-  // admin
-  if (user === ADMIN_USER && pass === ADMIN_PASS) {
-    req.userRole = "admin";
-    req.authUser = user;
-    return next();
-  }
-
-  // staff
-  if (user === STAFF_USER && pass === STAFF_PASS) {
-    req.userRole = "staff";
-    req.authUser = user;
-    return next();
-  }
-
-  res.set("WWW-Authenticate", 'Basic realm="Saulstari Admin"');
-  return res.status(401).send("Nepareizs lietotājvārds vai parole");
+  // API atgriežam skaidru 401
+  return res.status(401).json({ error: "auth_required" });
 }
 
 // ==== PostgreSQL pieslēgums ===========================
@@ -178,6 +180,8 @@ initDb().catch((err) => {
 // ==== Vidus slānis / statiskie faili ===================
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(authFromCookie);
 
 /**
  * =======================================================
@@ -200,7 +204,9 @@ app.use((req, res, next) => {
 
   // ja ienāk uz root (bez www), pārsūtam uz www (saglabājam path + query)
   const isRootDomain =
-    host === "karjerssaulstari.lv" || host === "karjerssaulstari.lv:80" || host === "karjerssaulstari.lv:443";
+    host === "karjerssaulstari.lv" ||
+    host === "karjerssaulstari.lv:80" ||
+    host === "karjerssaulstari.lv:443";
 
   const needsWww = isRootDomain;
   const needsHttps = proto !== "https";
@@ -214,15 +220,71 @@ app.use((req, res, next) => {
   return next();
 });
 
-// Vispirms aizsargājam /admin ar paroli
-app.use("/admin", requireAdminAuth);
+// ==== Login / Logout API =================================
+
+// Login (saņem username/password, iedod cookie ar tokenu)
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body || {};
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "missing_credentials" });
+  }
+
+  // admin
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
+    const token = signToken({ user: username, role: "admin" });
+    res.cookie("saulstari_token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+    return res.json({ ok: true, role: "admin" });
+  }
+
+  // staff
+  if (username === STAFF_USER && password === STAFF_PASS) {
+    const token = signToken({ user: username, role: "staff" });
+    res.cookie("saulstari_token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+    return res.json({ ok: true, role: "staff" });
+  }
+
+  return res.status(401).json({ error: "invalid_credentials" });
+});
+
+// Logout (izdzēš cookie)
+app.post("/api/logout", (req, res) => {
+  res.clearCookie("saulstari_token", { path: "/" });
+  return res.json({ ok: true });
+});
+
+// ==== Admin aizsardzība (bez Basic Auth) ==================
+// Atļaujam login lapu un PWA tehniskos failus bez autorizācijas
+app.use("/admin", (req, res, next) => {
+  if (
+    req.path === "/login.html" ||
+    req.path === "/manifest.json" ||
+    req.path === "/sw.js" ||
+    req.path.startsWith("/icons/")
+  ) {
+    return next();
+  }
+  return requireLogin(req, res, next);
+});
 
 // statiskie faili – lai darbojas index.html, materials.html utt.
 app.use(express.static(path.join(__dirname)));
 
 // ==== API: kas es esmu (loma) ==========================
 // Lai admin panelis zinātu, vai lietotājs ir "admin" vai "staff"
-app.get("/api/me", requireAdminAuth, (req, res) => {
+app.get("/api/me", requireLogin, (req, res) => {
   res.json({ role: req.userRole || "staff" });
 });
 
@@ -251,7 +313,7 @@ app.get("/api/materials", async (req, res) => {
 // admin.js sūta:
 //  { materials: [...], lastUpdate: "..." }
 
-app.put("/api/materials", requireAdminAuth, async (req, res) => {
+app.put("/api/materials", requireLogin, async (req, res) => {
   const { materials, lastUpdate } = req.body || {};
 
   if (!Array.isArray(materials)) {
