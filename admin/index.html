@@ -4,6 +4,16 @@
   <meta charset="utf-8">
   <title>Saulstari — Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- PWA (Admin App) -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#111827">
+
+  <!-- iOS (Add to Home Screen) -->
+  <link rel="apple-touch-icon" href="/admin/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
   <link rel="stylesheet" href="style.css">
   <style>
     body {
@@ -156,16 +166,16 @@
         color: #455449;
       }
       .admin-id-pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #eef2ea;
-      font-size: 12px;
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eef2ea;
+        font-size: 12px;
       }
-    .btn-danger {
-    background: #fde7e7;
-    color: #5a1f1f;
-    border: 1px solid #dc6b6b;
+      .btn-danger {
+        background: #fde7e7;
+        color: #5a1f1f;
+        border: 1px solid #dc6b6b;
       }
     }
   </style>
@@ -196,12 +206,12 @@
           <th style="width: 6%">Dzēst</th>
         </tr>
       </thead>
-        <tbody id="materialsTableBody">
+      <tbody id="materialsTableBody">
         <!-- rindas tiks ģenerētas ar JS -->
-        </tbody>
+      </tbody>
     </table>
 
-   <div class="admin-actions">
+    <div class="admin-actions">
       <button class="btn btn-primary" id="saveBtn">
         Saglabāt izmaiņas
       </button>
@@ -218,5 +228,12 @@
   </div>
 
   <script src="admin.js"></script>
+
+  <!-- PWA: reģistrē Service Worker (bez cache) -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/admin/sw.js");
+    }
+  </script>
 </body>
 </html>
