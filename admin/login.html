@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="lv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Saulstari Admin — Ielogošanās</title>
+
+  <!-- PWA (lai arī login lapa strādā app režīmā) -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#111827">
+  <link rel="apple-touch-icon" href="/admin/icons/icon-192.png">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #f4f6f1;
+      color: #122018;
+    }
+    .box {
+      max-width: 420px;
+      margin: 48px auto;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(18,31,25,.06);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 12px 0 6px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #c5cec0;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 16px;
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      background: #1f3b2d;
+      color: #ffffff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .err {
+      margin-top: 12px;
+      color: #7a1f1f;
+      font-size: 14px;
+      min-height: 18px;
+    }
+    .hint {
+      margin-top: 8px;
+      color: #455449;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Ielogošanās</h2>
+
+    <label for="u">Lietotājvārds</label>
+    <input id="u" autocomplete="username" />
+
+    <label for="p">Parole</label>
+    <input id="p" type="password" autocomplete="current-password" />
+
+    <button id="btn">Ieiet</button>
+
+    <div class="err" id="err"></div>
+    <div class="hint">Izmanto tos pašus datus, kas bija iepriekš.</div>
+  </div>
+
+  <script>
+    const btn = document.getElementById("btn");
+    const err = document.getElementById("err");
+
+    async function doLogin() {
+      err.textContent = "";
+
+      const username = document.getElementById("u").value.trim();
+      const password = document.getElementById("p").value;
+
+      if (!username || !password) {
+        err.textContent = "Ievadi lietotājvārdu un paroli.";
+        return;
+      }
+
+      const r = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!r.ok) {
+        err.textContent = "Nepareizs lietotājvārds vai parole.";
+        return;
+      }
+
+      // pēc veiksmīgas ielogošanās ejam uz admin sākumu
+      location.href = "/admin/";
+    }
+
+    btn.addEventListener("click", doLogin);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") doLogin();
+    });
+  </script>
+</body>
+</html>
