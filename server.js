@@ -40,7 +40,7 @@ function authFromCookie(req, res, next) {
 
   try {
     const data = jwt.verify(token, SESSION_SECRET);
-    req.userRole = data.role;   // "admin" | "staff"
+    req.userRole = data.role; // "admin" | "staff"
     req.authUser = data.user;
   } catch (e) {
     // slikts/novecojis tokens -> ignorējam
@@ -104,9 +104,7 @@ async function initDb() {
   `);
 
   // 2) Ja tabula tukša – ieimportē no data/materials.json
-  const { rows } = await pool.query(
-    "SELECT COUNT(*)::int AS count FROM materials"
-  );
+  const { rows } = await pool.query("SELECT COUNT(*)::int AS count FROM materials");
   if (rows[0].count === 0) {
     console.log("materials tabula tukša – importējam no JSON...");
 
@@ -114,9 +112,7 @@ async function initDb() {
     const raw = await fs.readFile(filePath, "utf8");
     const data = JSON.parse(raw);
 
-    const items = Array.isArray(data)
-      ? data
-      : data.materials || data.items || [];
+    const items = Array.isArray(data) ? data : data.materials || data.items || [];
 
     for (let i = 0; i < items.length; i++) {
       const m = items[i];
@@ -135,12 +131,7 @@ async function initDb() {
         }
       }
 
-      const note =
-        m.note ||
-        m.notes ||
-        m.comment ||
-        m.piezime ||
-        "";
+      const note = m.note || m.notes || m.comment || m.piezime || "";
 
       await pool.query(
         `
@@ -164,9 +155,7 @@ async function initDb() {
       );
     }
 
-    await pool.query(
-      `INSERT INTO materials_updates (updated_at) VALUES (now())`
-    );
+    await pool.query(`INSERT INTO materials_updates (updated_at) VALUES (now())`);
 
     console.log("Sākotnējie dati ieimportēti datubāzē.");
   }
@@ -249,7 +238,6 @@ app.post("/api/login", (req, res) => {
       httpOnly: true,
       sameSite: "lax",
       secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     });
     return res.json({ ok: true, role: "staff" });
@@ -258,10 +246,10 @@ app.post("/api/login", (req, res) => {
   return res.status(401).json({ error: "invalid_credentials" });
 });
 
-// Logout (izdzēš cookie)
+// Logout (izdzēš cookie) — 204 ir stabilākais sendBeacon/iOS gadījumā
 app.post("/api/logout", (req, res) => {
   res.clearCookie("saulstari_token", { path: "/" });
-  return res.json({ ok: true });
+  return res.sendStatus(204);
 });
 
 // ==== Admin aizsardzība (bez Basic Auth) ==================
@@ -291,9 +279,7 @@ app.get("/api/me", requireLogin, (req, res) => {
 
 app.get("/api/materials", async (req, res) => {
   try {
-    const mats = await pool.query(
-      "SELECT * FROM materials ORDER BY order_index, id"
-    );
+    const mats = await pool.query("SELECT * FROM materials ORDER BY order_index, id");
     const upd = await pool.query(
       "SELECT updated_at FROM materials_updates ORDER BY id DESC LIMIT 1"
     );
@@ -309,8 +295,6 @@ app.get("/api/materials", async (req, res) => {
 });
 
 // ==== API: saglabāt materiālus no admin ======
-// admin.js sūta:
-//  { materials: [...], lastUpdate: "..." }
 
 app.put("/api/materials", requireLogin, async (req, res) => {
   const { materials, lastUpdate } = req.body || {};
@@ -328,15 +312,12 @@ app.put("/api/materials", requireLogin, async (req, res) => {
       for (let i = 0; i < materials.length; i++) {
         const m = materials[i];
 
-        // Identificējam rindu pēc DB id (admin tabulā tas ir paslēptajā ID laukā)
         const idNum = Number(m.id);
         if (!Number.isFinite(idNum)) continue;
 
         const statusRaw = (m.status || m.availability || "").toString().trim();
-        const note =
-          (m.note || m.notes || m.comment || m.piezime || "").toString();
+        const note = (m.note || m.notes || m.comment || m.piezime || "").toString();
 
-        // available atvasinām no status
         let available = true;
         if (statusRaw && statusRaw.toLowerCase() === "nav pieejams") {
           available = false;
@@ -379,7 +360,6 @@ app.put("/api/materials", requireLogin, async (req, res) => {
       const statusRaw = (m.status || m.availability || "").toString().trim();
       let available = m.available;
 
-      // ja admin nedeva available, atvasinām no status
       if (available === undefined || available === null) {
         if (!statusRaw) {
           available = true;
@@ -390,12 +370,7 @@ app.put("/api/materials", requireLogin, async (req, res) => {
         }
       }
 
-      const note =
-        m.note ||
-        m.notes ||
-        m.comment ||
-        m.piezime ||
-        "";
+      const note = m.note || m.notes || m.comment || m.piezime || "";
 
       await client.query(
         `
@@ -418,7 +393,6 @@ app.put("/api/materials", requireLogin, async (req, res) => {
       );
     }
 
-    // saglabā jauno "atjaunots" laiku
     const updatedAt = lastUpdate ? new Date(lastUpdate) : new Date();
     await client.query(
       "INSERT INTO materials_updates (updated_at) VALUES ($1)",
