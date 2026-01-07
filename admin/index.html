@@ -229,11 +229,26 @@
 
   <script src="admin.js"></script>
 
-  <!-- PWA: reģistrē Service Worker (bez cache) -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/admin/sw.js");
-    }
-  </script>
+<!-- PWA: reģistrē Service Worker (bez cache) -->
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/admin/sw.js");
+  }
+</script>
+
+<!-- iPhone PWA: automātiska izlogošanās, kad app aiziet fonā/aizveras -->
+<script>
+  function logoutBeacon() {
+    try {
+      navigator.sendBeacon("/api/logout");
+    } catch (e) {}
+  }
+
+  window.addEventListener("pagehide", logoutBeacon);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") logoutBeacon();
+  });
+</script>
+
 </body>
 </html>
